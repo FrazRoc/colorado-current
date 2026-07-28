@@ -12,15 +12,36 @@ export async function fetchCompanies(): Promise<Company[]> {
   }
 
   try {
+    // Force no-cache to ensure fresh data on each request during dev
     const res = await fetch(SHEETS_URL, {
-      // Revalidate every hour in production
       next: { revalidate: 3600 },
+      cache: "no-store",
+      headers: {
+        "Accept": "text/csv,text/plain,*/*",
+      },
     });
 
-    if (!res.ok) throw new Error(`Sheets fetch failed: ${res.status}`);
+    if (!res.ok) {
+      console.error(`Sheets fetch failed: ${res.status} ${res.statusText} — URL: ${SHEETS_URL}`);
+      return [];
+    }
 
     const csv = await res.text();
-    return parseCSV(csv);
+
+    if (!csv || csv.trim().length === 0) {
+      console.error("Sheets returned empty response");
+      return [];
+    }
+
+    // Detect if we got an HTML error page instead of CSV
+    if (csv.trim().startsWith("<")) {
+      console.error("Sheets returned HTML instead of CSV — check that the sheet is published to web as CSV");
+      return [];
+    }
+
+    const companies = parseCSV(csv);
+    console.log(`Fetched ${companies.length} companies from Google Sheets`);
+    return companies;
   } catch (err) {
     console.error("Failed to fetch company data:", err);
     return [];

@@ -36,7 +36,7 @@ export default function PostCard({ post, featured = false, compact = false }: Pr
           {post.type}
         </span>
         <span className="text-2xs font-sans text-ink-faint">
-          {post.date} · {post.readTime}
+          {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {post.readTime}
         </span>
       </div>
 

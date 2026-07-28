@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   description: "Directory of 40+ Colorado clean energy companies tracked by Colorado Current.",
 };
 
+// Don't cache this page — always fetch fresh from Sheets
+export const revalidate = 3600;
+
 export default async function CompaniesPage() {
   const companies = await fetchCompanies();
 
@@ -17,8 +20,13 @@ export default async function CompaniesPage() {
           Company directory
         </h1>
         <p className="text-sm font-sans text-ink-secondary max-w-xl">
-          {companies.length > 0 ? companies.length : "40"}+ Colorado clean energy companies across solar, storage, grid software, geothermal, hydrogen, and more.
+          {companies.length > 0 ? `${companies.length}` : "40"}+ Colorado clean energy companies across solar, storage, grid software, geothermal, hydrogen, and more.
         </p>
+        {companies.length === 0 && (
+          <p className="text-xs font-sans text-amber-600 mt-2">
+            ⚠ Could not load company data. Check that NEXT_PUBLIC_SHEETS_CSV_URL is set correctly in Vercel environment variables.
+          </p>
+        )}
       </div>
       <CompanyTable companies={companies} />
     </div>
