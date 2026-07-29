@@ -1,17 +1,19 @@
-import type { Legislation } from "@/types";
+import type { Legislation, DashboardSource } from "@/types";
 import { LEGISLATION_STYLES } from "@/lib/sectors";
+import SourceLinks from "./SourceLinks";
 
 interface Props {
   legislation: Legislation[];
+  sources: DashboardSource[];
 }
 
-export default function PolicyPanel({ legislation }: Props) {
+export default function PolicyPanel({ legislation, sources }: Props) {
   return (
-    <div className="px-5 py-5">
+    <div className="px-5 py-5 flex flex-col">
       <div className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-3.5">
         CO legislation
       </div>
-      <div className="space-y-0">
+      <div className="space-y-0 flex-1">
         {legislation.map((item, i) => {
           const style = LEGISLATION_STYLES[item.status] || {
             bg: "#f5f5f3",
@@ -35,6 +37,7 @@ export default function PolicyPanel({ legislation }: Props) {
           );
         })}
       </div>
+      <SourceLinks sources={sources} />
     </div>
   );
 }

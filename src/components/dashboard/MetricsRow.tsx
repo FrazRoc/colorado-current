@@ -1,16 +1,26 @@
-import type { DashboardMetric } from "@/types";
+import type { DashboardMetric, DashboardSource } from "@/types";
+import SourceLinks from "./SourceLinks";
+
+// Per-metric source mapping keys
+const SOURCE_KEYS = [
+  "trackedCompanies",
+  "ecosystemFunding",
+  "openJobs",
+  "renewableGeneration",
+] as const;
 
 interface Props {
   metrics: DashboardMetric[];
+  sources: Record<string, DashboardSource[]>;
 }
 
-export default function MetricsRow({ metrics }: Props) {
+export default function MetricsRow({ metrics, sources }: Props) {
   return (
     <div className="grid grid-cols-4 border-t-[3px] border-ink border-l border-surface-border">
       {metrics.map((m, i) => (
         <div
           key={i}
-          className="px-5 py-5 border-r border-surface-border last:border-r-0"
+          className="px-5 py-5 border-r border-surface-border last:border-r-0 flex flex-col"
         >
           <div className="text-4xl font-serif font-extrabold text-ink leading-none tracking-tight">
             {m.value}
@@ -27,6 +37,9 @@ export default function MetricsRow({ metrics }: Props) {
               {m.delta}
             </div>
           )}
+          <div className="mt-auto">
+            <SourceLinks sources={sources[SOURCE_KEYS[i]] || []} />
+          </div>
         </div>
       ))}
     </div>

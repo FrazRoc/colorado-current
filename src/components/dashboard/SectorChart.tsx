@@ -1,16 +1,20 @@
+import type { DashboardSource } from "@/types";
+import SourceLinks from "./SourceLinks";
+
 interface Props {
   sectors: { name: string; count: number }[];
+  sources: DashboardSource[];
 }
 
-export default function SectorChart({ sectors }: Props) {
+export default function SectorChart({ sectors, sources }: Props) {
   const max = Math.max(...sectors.map((s) => s.count));
 
   return (
-    <div className="px-5 py-5 border-r border-surface-border">
+    <div className="px-5 py-5 border-r border-surface-border flex flex-col">
       <div className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-3.5">
         Companies by sector
       </div>
-      <div className="space-y-2.5">
+      <div className="space-y-2.5 flex-1">
         {sectors.map((s) => (
           <div key={s.name} className="flex items-center gap-2.5">
             <div className="text-xs font-sans text-ink-secondary w-36 flex-shrink-0">
@@ -28,6 +32,7 @@ export default function SectorChart({ sectors }: Props) {
           </div>
         ))}
       </div>
+      <SourceLinks sources={sources} />
     </div>
   );
 }

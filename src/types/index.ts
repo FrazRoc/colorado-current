@@ -75,6 +75,11 @@ export interface Legislation {
   bill?: string;
 }
 
+export interface DashboardSource {
+  label: string;
+  url: string;
+}
+
 export interface DashboardData {
   metrics: DashboardMetric[];
   sectorCounts: { name: string; count: number }[];
@@ -84,4 +89,14 @@ export interface DashboardData {
   vppGoal: number;
   heatPumpRebates: number;
   updatedAt: string;
+  sources: {
+    trackedCompanies: DashboardSource[];
+    ecosystemFunding: DashboardSource[];
+    openJobs: DashboardSource[];
+    renewableGeneration: DashboardSource[];
+    vpp: DashboardSource[];
+    heatPumps: DashboardSource[];
+    legislation: DashboardSource[];
+    recentFunding: DashboardSource[];
+  };
 }

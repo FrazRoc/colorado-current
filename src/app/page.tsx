@@ -13,6 +13,7 @@ export default function HomePage() {
   const featured = posts[0];
   const sidebar = posts.slice(1, 3);
   const lower = posts.slice(3, 6);
+  const { sources } = dashboardData;
 
   return (
     <>
@@ -34,13 +35,22 @@ export default function HomePage() {
         </div>
 
         {/* Top 4 metrics */}
-        <MetricsRow metrics={dashboardData.metrics} />
+        <MetricsRow metrics={dashboardData.metrics} sources={sources} />
 
         {/* Second row: sector chart + funding + policy */}
         <div className="grid grid-cols-[2fr_1fr_1fr] border-t border-surface-border border-l border-surface-border">
-          <SectorChart sectors={dashboardData.sectorCounts} />
-          <FundingPanel rounds={dashboardData.recentFunding} />
-          <PolicyPanel legislation={dashboardData.legislation} />
+          <SectorChart
+            sectors={dashboardData.sectorCounts}
+            sources={sources.trackedCompanies}
+          />
+          <FundingPanel
+            rounds={dashboardData.recentFunding}
+            sources={sources.recentFunding}
+          />
+          <PolicyPanel
+            legislation={dashboardData.legislation}
+            sources={sources.legislation}
+          />
         </div>
 
         {/* Third row: VPP + heat pumps */}
@@ -48,6 +58,8 @@ export default function HomePage() {
           vppMw={dashboardData.vppMw}
           vppGoal={dashboardData.vppGoal}
           heatPumpRebates={dashboardData.heatPumpRebates}
+          vppSources={sources.vpp}
+          heatPumpSources={sources.heatPumps}
         />
       </section>
 
@@ -76,9 +88,7 @@ export default function HomePage() {
           <>
             {/* Featured + sidebar */}
             <div className="grid grid-cols-[3fr_1fr] gap-8 border-b border-surface-border pb-7 mb-7">
-              {featured && (
-                <PostCard post={featured} featured />
-              )}
+              {featured && <PostCard post={featured} featured />}
               <div className="border-l border-surface-border pl-7 flex flex-col gap-0">
                 {sidebar.map((post, i) => (
                   <div

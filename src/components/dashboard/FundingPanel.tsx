@@ -1,16 +1,18 @@
-import type { FundingRound } from "@/types";
+import type { FundingRound, DashboardSource } from "@/types";
+import SourceLinks from "./SourceLinks";
 
 interface Props {
   rounds: FundingRound[];
+  sources: DashboardSource[];
 }
 
-export default function FundingPanel({ rounds }: Props) {
+export default function FundingPanel({ rounds, sources }: Props) {
   return (
-    <div className="px-5 py-5 border-r border-surface-border">
+    <div className="px-5 py-5 border-r border-surface-border flex flex-col">
       <div className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-3.5">
         Recent funding
       </div>
-      <div className="space-y-0">
+      <div className="space-y-0 flex-1">
         {rounds.map((r, i) => (
           <div
             key={i}
@@ -34,6 +36,7 @@ export default function FundingPanel({ rounds }: Props) {
           </div>
         ))}
       </div>
+      <SourceLinks sources={sources} />
     </div>
   );
 }
