@@ -10,7 +10,11 @@ export const metadata: Metadata = {
   },
   description:
     "Independent analysis of Colorado's clean energy startup ecosystem. Tracking companies, capital, and policy shaping the state's energy future.",
-  metadataBase: new URL("https://coloradocurrent.co"),
+  metadataBase: new URL("https://coloradocurrent.com"),
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+  },
   openGraph: {
     siteName: "Colorado Current",
     type: "website",
