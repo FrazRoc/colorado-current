@@ -41,7 +41,7 @@ export default function HomePage() {
         <div className="grid grid-cols-[2fr_1fr_1fr] border-t border-surface-border border-l border-surface-border">
           <SectorChart
             sectors={dashboardData.sectorCounts}
-            sources={sources.trackedCompanies}
+            sources={[]}
           />
           <FundingPanel
             rounds={dashboardData.recentFunding}

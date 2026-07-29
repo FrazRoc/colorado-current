@@ -8,24 +8,19 @@ export default function SourceLinks({ sources }: Props) {
   if (!sources || sources.length === 0) return null;
 
   return (
-    <div className="mt-3 pt-2.5 border-t border-surface-divider">
-      <span className="text-2xs font-sans text-ink-faint uppercase tracking-widest mr-1.5">
-        Sources:
-      </span>
+    <div className="mt-2 flex flex-wrap gap-x-2 gap-y-0.5">
       {sources.map((s, i) => (
-        <span key={i}>
-          <a
-            href={s.url}
-            target={s.url.startsWith("http") ? "_blank" : undefined}
-            rel={s.url.startsWith("http") ? "noopener noreferrer" : undefined}
-            className="text-2xs font-sans text-cc-green hover:underline"
-          >
-            {s.label}
-          </a>
-          {i < sources.length - 1 && (
-            <span className="text-ink-faint text-2xs mx-1">·</span>
-          )}
-        </span>
+        <a
+          key={i}
+          href={s.url}
+          target={s.url.startsWith("http") ? "_blank" : undefined}
+          rel={s.url.startsWith("http") ? "noopener noreferrer" : undefined}
+          className="text-ink-faint hover:text-cc-green transition-colors"
+          style={{ fontSize: "9px", letterSpacing: "0.02em" }}
+          title={s.label}
+        >
+          [{i + 1}]
+        </a>
       ))}
     </div>
   );

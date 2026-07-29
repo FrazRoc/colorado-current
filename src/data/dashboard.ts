@@ -110,16 +110,13 @@ const dashboardData: DashboardData = {
 
   // Sources for every dashboard metric — displayed as citations on the site
   sources: {
-    trackedCompanies: [
-      { label: "Colorado Current company directory", url: "/companies" },
-    ],
+    trackedCompanies: [],
     ecosystemFunding: [
-      { label: "Colorado Current company directory (aggregated)", url: "/companies" },
       { label: "Crunchbase", url: "https://crunchbase.com" },
       { label: "PitchBook", url: "https://pitchbook.com" },
     ],
     openJobs: [
-      { label: "ClimateTechList — Colorado clean energy jobs", url: "https://climatetechlist.com" },
+      { label: "ClimateTechList", url: "https://climatetechlist.com" },
     ],
     renewableGeneration: [
       { label: "Colorado Sun — 43% renewable in 2025 (EIA data)", url: "https://coloradosun.com/2026/04/10/colorado-renewable-energy/" },
