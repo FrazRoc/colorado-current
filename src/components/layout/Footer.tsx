@@ -19,15 +19,13 @@ export default function Footer() {
             <div className="font-semibold text-ink uppercase tracking-wider mb-3">Explore</div>
             <div className="flex flex-col gap-2 text-ink-muted">
               <Link href="/companies" className="hover:text-ink no-underline">Companies</Link>
-              <Link href="/funding" className="hover:text-ink no-underline">Funding</Link>
-              <Link href="/policy" className="hover:text-ink no-underline">Policy</Link>
               <Link href="/blog" className="hover:text-ink no-underline">Blog</Link>
+              <Link href="/about" className="hover:text-ink no-underline">About</Link>
             </div>
           </div>
           <div>
-            <div className="font-semibold text-ink uppercase tracking-wider mb-3">About</div>
+            <div className="font-semibold text-ink uppercase tracking-wider mb-3">Connect</div>
             <div className="flex flex-col gap-2 text-ink-muted">
-              <Link href="/about" className="hover:text-ink no-underline">About</Link>
               <a href="https://linkedin.com/in/evanfrasz" target="_blank" rel="noopener noreferrer" className="hover:text-ink no-underline">LinkedIn</a>
               <a href="https://github.com/FrazRoc" target="_blank" rel="noopener noreferrer" className="hover:text-ink no-underline">GitHub</a>
             </div>

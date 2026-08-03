@@ -82,33 +82,17 @@ const dashboardData: DashboardData = {
   ],
 
   legislation: [
-    {
-      name: "Inclusive Community Solar (SB 24-207)",
-      status: "Signed",
-    },
-    {
-      name: "Grid of the Future (SB 218)",
-      status: "Signed",
-    },
-    {
-      name: "Geothermal Development",
-      status: "Active",
-    },
-    {
-      name: "Split-Rate Tax (HB26-1119)",
-      status: "Committee",
-    },
-    {
-      name: "Solar for All ($156M EPA grant)",
-      status: "At risk",
-    },
+    { name: "Inclusive Community Solar (SB 24-207)", status: "Signed" },
+    { name: "Grid of the Future (SB 218)", status: "Signed" },
+    { name: "Geothermal Development", status: "Active" },
+    { name: "Split-Rate Tax (HB26-1119)", status: "Committee" },
+    { name: "Solar for All ($156M EPA grant)", status: "At risk" },
   ],
 
   vppMw: 10,
   vppGoal: 125,
   heatPumpRebates: 10640,
 
-  // Sources for every dashboard metric — displayed as citations on the site
   sources: {
     trackedCompanies: [],
     ecosystemFunding: [
@@ -119,30 +103,28 @@ const dashboardData: DashboardData = {
       { label: "ClimateTechList", url: "https://climatetechlist.com" },
     ],
     renewableGeneration: [
-      { label: "Colorado Sun — 43% renewable in 2025 (EIA data)", url: "https://coloradosun.com/2026/04/10/colorado-renewable-energy/" },
-      { label: "EIA — Colorado State Energy Profile", url: "https://www.eia.gov/state/print.php?sid=CO" },
-      { label: "Independence Institute — Fast Facts About Colorado's Electricity Sector in 2025", url: "https://i2i.org/fast-facts-about-colorados-electricity-sector-in-2025/" },
+      { label: "Colorado Sun", url: "https://coloradosun.com/2026/04/10/colorado-renewable-energy/" },
+      { label: "EIA State Profile", url: "https://www.eia.gov/state/print.php?sid=CO" },
     ],
     vpp: [
-      { label: "Utility Dive — Enphase expands VPP support in Colorado (Feb 2025)", url: "https://www.utilitydive.com/news/enphase-vpp-colorado-xcel-energy-battery-connect/739834/" },
-      { label: "Itron — Xcel Energy to Deploy Advanced VPP in Colorado (Mar 2025)", url: "https://investors.itron.com/news-releases/news-release-details/xcel-energy-deploy-advanced-virtual-power-plant-colorado-itron" },
-      { label: "SEPA/NCCETC — States and utilities took 106 VPP actions in 2025", url: "https://pv-magazine-usa.com/2026/02/02/states-and-utilities-took-106-actions-to-advance-vpps-in-2025-sepa-report/" },
+      { label: "Utility Dive", url: "https://www.utilitydive.com/news/enphase-vpp-colorado-xcel-energy-battery-connect/739834/" },
+      { label: "Itron press release", url: "https://investors.itron.com/news-releases/news-release-details/xcel-energy-deploy-advanced-virtual-power-plant-colorado-itron" },
     ],
     heatPumps: [
-      { label: "Colorado Sun — Heat pump installations more than doubled in 2025 (Feb 2026)", url: "https://coloradosun.com/2026/02/19/heat-pump-colorado-rebates-contractors/" },
+      { label: "Colorado Sun", url: "https://coloradosun.com/2026/02/19/heat-pump-colorado-rebates-contractors/" },
     ],
     legislation: [
-      { label: "Colorado General Assembly — SB 24-207 (Inclusive Community Solar)", url: "https://leg.colorado.gov/bills/sb24-207" },
-      { label: "Colorado General Assembly — SB 23-218 (Grid of the Future)", url: "https://leg.colorado.gov/bills/sb23-218" },
-      { label: "Colorado General Assembly — HB 26-1119 (Split-Rate Tax)", url: "https://leg.colorado.gov/bills/hb26-1119" },
-      { label: "EPA — Solar for All program status", url: "https://www.epa.gov/greenhouse-gas-reduction-fund/solar-all" },
+      { label: "SB 24-207", url: "https://leg.colorado.gov/bills/sb24-207" },
+      { label: "SB 23-218", url: "https://leg.colorado.gov/bills/sb23-218" },
+      { label: "HB 26-1119", url: "https://leg.colorado.gov/bills/hb26-1119" },
+      { label: "EPA Solar for All", url: "https://www.epa.gov/greenhouse-gas-reduction-fund/solar-all" },
     ],
     recentFunding: [
-      { label: "Zero Homes Series A announcement (Feb 2026)", url: "https://www.zerohomes.com/blog/series-a-announcement" },
-      { label: "AtmosZero Series B (Mar 2026)", url: "https://www.businesswire.com/news/home/20260301/en/AtmosZero-Raises-Series-B" },
-      { label: "Fervo Energy IPO (May 2026)", url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=fervo&CIK=&type=S-1" },
-      { label: "Koloma Series B extension (Oct 2024)", url: "https://tracxn.com/d/companies/koloma" },
-      { label: "Pivot Energy project finance (Nov 2024)", url: "https://inven.ai/company/pivot-energy" },
+      { label: "Zero Homes Series A", url: "https://www.zerohomes.com/blog/series-a-announcement" },
+      { label: "AtmosZero Series B", url: "https://www.businesswire.com/news/home/20260301/en/AtmosZero-Raises-Series-B" },
+      { label: "Fervo IPO (SEC)", url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=fervo&CIK=&type=S-1" },
+      { label: "Koloma Crunchbase", url: "https://tracxn.com/d/companies/koloma" },
+      { label: "Pivot Energy", url: "https://inven.ai/company/pivot-energy" },
     ],
   },
 };
