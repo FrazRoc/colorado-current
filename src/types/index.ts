@@ -15,11 +15,13 @@ export type Sector =
   | "Utility / Renewable Power"
   | "Energy Efficiency / Finance"
   | "Distributed Solar"
-  | "Energy Storage";
+  | "Energy Storage"
+  | "Fusion";
 
 export type Stage =
   | "Pre-seed"
   | "Early"
+  | "Early (Series A)"
   | "Growth"
   | "Late"
   | "Public"
@@ -35,9 +37,13 @@ export interface Company {
   funding: string;
   what_they_do: string;
   interesting_angle: string;
-  source: string;
   website?: string;
   founded?: string;
+  b_corp?: string;
+  target_customer?: string;
+  last_updated?: string;
+  sources?: string;
+  notes?: string;
 }
 
 export type PostType = "Company spotlight" | "Industry analysis" | "Deep dive" | "Policy";
@@ -75,6 +81,21 @@ export interface Legislation {
   bill?: string;
 }
 
+export interface EmissionsTarget {
+  year: number;
+  reductionPct: number;
+  targetMmt: number;
+}
+
+export interface EmissionsData {
+  baseline2005: number;
+  targets: EmissionsTarget[];
+  actual2025Mmt: number;
+  projected2030Mmt: number;
+  yearsBehind: number;
+  note: string;
+}
+
 export interface DashboardSource {
   label: string;
   url: string;
@@ -89,6 +110,7 @@ export interface DashboardData {
   vppGoal: number;
   heatPumpRebates: number;
   updatedAt: string;
+  emissions: EmissionsData;
   sources: {
     trackedCompanies: DashboardSource[];
     ecosystemFunding: DashboardSource[];
@@ -98,5 +120,6 @@ export interface DashboardData {
     heatPumps: DashboardSource[];
     legislation: DashboardSource[];
     recentFunding: DashboardSource[];
+    emissions: DashboardSource[];
   };
 }
