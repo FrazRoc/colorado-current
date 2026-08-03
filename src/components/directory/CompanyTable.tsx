@@ -104,44 +104,59 @@ export default function CompanyTable({ companies }: Props) {
                 const style = getSectorStyle(company.sector);
                 const isExpanded = expanded === company.name;
                 return (
-                  <>
-                    <tr
-                      key={company.name}
-                      className="border-b border-surface-divider hover:bg-surface-dash cursor-pointer transition-colors"
-                      onClick={() => setExpanded(isExpanded ? null : company.name)}
-                    >
-                      <td className="px-4 py-3 font-semibold text-ink">
-                        {company.name}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className="text-tag font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm"
-                          style={{ background: style.bg, color: style.text }}
-                        >
-                          {company.sector}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-ink-secondary">{company.stage}</td>
-                      <td className="px-4 py-3 font-semibold text-cc-green">{company.funding}</td>
-                      <td className="px-4 py-3 text-ink-secondary">{company.hq}</td>
-                    </tr>
-                    {isExpanded && (
-                      <tr key={`${company.name}-expanded`} className="bg-surface-dash border-b border-surface-divider">
-                        <td colSpan={5} className="px-4 py-4">
-                          <div className="max-w-2xl">
-                            <p className="text-sm text-ink-secondary leading-relaxed mb-2">
-                              {company.what_they_do}
-                            </p>
-                            {company.interesting_angle && (
-                              <p className="text-xs text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3">
-                                {company.interesting_angle}
-                              </p>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </>
+                  <tr key={company.name}>
+                    <td colSpan={5} className="p-0">
+                      <table className="w-full border-collapse">
+                        <tbody>
+                          <tr
+                            className="border-b border-surface-divider hover:bg-surface-dash cursor-pointer transition-colors"
+                            onClick={() => setExpanded(isExpanded ? null : company.name)}
+                          >
+                            <td className="px-4 py-3 font-semibold text-ink w-1/5">
+                              {company.name}
+                            </td>
+                            <td className="px-4 py-3 w-1/5">
+                              <span
+                                className="text-tag font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm"
+                                style={{ background: style.bg, color: style.text }}
+                              >
+                                {company.sector}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-ink-secondary w-1/5">{company.stage}</td>
+                            <td className="px-4 py-3 font-semibold text-cc-green w-1/5">{company.funding}</td>
+                            <td className="px-4 py-3 text-ink-secondary w-1/5">{company.hq}</td>
+                          </tr>
+                          {isExpanded && (
+                            <tr className="bg-surface-dash border-b border-surface-divider">
+                              <td colSpan={5} className="px-4 py-4">
+                                <div className="max-w-2xl">
+                                  <p className="text-sm text-ink-secondary leading-relaxed mb-2">
+                                    {company.what_they_do}
+                                  </p>
+                                  {company.interesting_angle && (
+                                    <p className="text-xs text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3">
+                                      {company.interesting_angle}
+                                    </p>
+                                  )}
+                                  {company.website && (
+                                    <a
+                                      href={company.website}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-xs text-cc-green hover:underline mt-2 inline-block"
+                                    >
+                                      {company.website} →
+                                    </a>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
                 );
               })
             )}
