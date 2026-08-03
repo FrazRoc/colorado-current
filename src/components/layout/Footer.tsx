@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-surface-border bg-surface-dash px-8 py-10 mt-16">
-      <div className="max-w-6xl mx-auto flex items-start justify-between gap-8">
+    <footer className="border-t border-surface-border bg-surface-dash px-5 md:px-8 py-10 mt-16">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start justify-between gap-8">
         <div>
           <div className="flex items-center gap-1.5 mb-2">
             <span className="text-base font-serif font-extrabold text-ink">Colorado Current</span>
@@ -33,13 +33,12 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-surface-border flex items-center justify-between">
+      <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-surface-border flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
         <p className="text-2xs font-sans text-ink-faint">
           © {new Date().getFullYear()} Colorado Current. Built by{" "}
           <a href="https://linkedin.com/in/evanfrasz" className="text-cc-green no-underline hover:underline">
             Evan Frasz
-          </a>
-          .
+          </a>.
         </p>
         <p className="text-2xs font-sans text-ink-faint">
           Data updated monthly. Not investment advice.

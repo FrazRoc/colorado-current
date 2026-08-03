@@ -45,43 +45,97 @@ export default function CompanyTable({ companies }: Props) {
   return (
     <div>
       {/* Filters */}
-      <div className="flex items-center gap-3 mb-6 flex-wrap">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mb-6 flex-wrap">
         <input
           type="text"
           placeholder="Search companies..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border border-surface-border rounded px-3 py-1.5 text-sm font-sans text-ink placeholder-ink-faint focus:outline-none focus:border-cc-green w-56"
+          className="border border-surface-border rounded px-3 py-2 text-sm font-sans text-ink placeholder-ink-faint focus:outline-none focus:border-cc-green w-full sm:w-56"
         />
         <select
           value={sectorFilter}
           onChange={(e) => setSectorFilter(e.target.value)}
-          className="border border-surface-border rounded px-3 py-1.5 text-sm font-sans text-ink focus:outline-none focus:border-cc-green bg-white"
+          className="border border-surface-border rounded px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-cc-green bg-white"
         >
           {sectors.map((s) => (
-            <option key={s} value={s}>
-              {s === ALL ? "All sectors" : s}
-            </option>
+            <option key={s} value={s}>{s === ALL ? "All sectors" : s}</option>
           ))}
         </select>
         <select
           value={stageFilter}
           onChange={(e) => setStageFilter(e.target.value)}
-          className="border border-surface-border rounded px-3 py-1.5 text-sm font-sans text-ink focus:outline-none focus:border-cc-green bg-white"
+          className="border border-surface-border rounded px-3 py-2 text-sm font-sans text-ink focus:outline-none focus:border-cc-green bg-white"
         >
           {stages.map((s) => (
-            <option key={s} value={s}>
-              {s === ALL ? "All stages" : s}
-            </option>
+            <option key={s} value={s}>{s === ALL ? "All stages" : s}</option>
           ))}
         </select>
-        <span className="text-xs font-sans text-ink-muted ml-auto">
+        <span className="text-xs font-sans text-ink-muted sm:ml-auto">
           {filtered.length} {filtered.length === 1 ? "company" : "companies"}
         </span>
       </div>
 
-      {/* Table */}
-      <div className="border border-surface-border rounded overflow-hidden">
+      {/* Mobile card view — shown below sm breakpoint */}
+      <div className="sm:hidden flex flex-col gap-3">
+        {filtered.length === 0 ? (
+          <p className="text-sm font-sans text-ink-muted text-center py-8">No companies match your filters.</p>
+        ) : (
+          filtered.map((company) => {
+            const style = getSectorStyle(company.sector);
+            const isExpanded = expanded === company.name;
+            return (
+              <div
+                key={company.name}
+                className="border border-surface-border rounded overflow-hidden"
+                onClick={() => setExpanded(isExpanded ? null : company.name)}
+              >
+                <div className="px-4 py-3 bg-surface cursor-pointer">
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                    <span className="text-sm font-sans font-semibold text-ink">{company.name}</span>
+                    <span
+                      className="text-tag font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm flex-shrink-0"
+                      style={{ background: style.bg, color: style.text }}
+                    >
+                      {company.sector}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-sans text-cc-green font-semibold">{company.funding}</span>
+                    <span className="text-xs font-sans text-ink-muted">{company.hq}</span>
+                  </div>
+                </div>
+                {isExpanded && (
+                  <div className="px-4 py-3 bg-surface-dash border-t border-surface-divider">
+                    <p className="text-sm font-sans text-ink-secondary leading-relaxed mb-2">
+                      {company.what_they_do}
+                    </p>
+                    {company.interesting_angle && (
+                      <p className="text-xs font-sans text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3 mb-2">
+                        {company.interesting_angle}
+                      </p>
+                    )}
+                    {company.website && (
+                      <a
+                        href={company.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-cc-green hover:underline"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {company.website} →
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop table — hidden on mobile */}
+      <div className="hidden sm:block border border-surface-border rounded overflow-hidden">
         <table className="w-full text-sm font-sans border-collapse">
           <thead>
             <tr className="border-b-2 border-ink bg-surface-dash">
@@ -112,9 +166,7 @@ export default function CompanyTable({ companies }: Props) {
                             className="border-b border-surface-divider hover:bg-surface-dash cursor-pointer transition-colors"
                             onClick={() => setExpanded(isExpanded ? null : company.name)}
                           >
-                            <td className="px-4 py-3 font-semibold text-ink w-1/5">
-                              {company.name}
-                            </td>
+                            <td className="px-4 py-3 font-semibold text-ink w-1/5">{company.name}</td>
                             <td className="px-4 py-3 w-1/5">
                               <span
                                 className="text-tag font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm"

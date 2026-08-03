@@ -13,9 +13,9 @@ export default function StatPanel({ vppMw, vppGoal, heatPumpRebates, vppSources,
   const pct = Math.round((vppMw / vppGoal) * 100);
 
   return (
-    <div className="grid grid-cols-2 border-t border-surface-border border-l border-surface-border">
+    <div className="grid grid-cols-1 md:grid-cols-2 border-t border-surface-border border-l border-surface-border">
       {/* VPP */}
-      <div className="px-5 py-4 border-r border-surface-border border-b border-surface-border flex flex-col">
+      <div className="px-4 md:px-5 py-4 border-r border-surface-border border-b border-surface-border flex flex-col">
         <div className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-3">
           Xcel VPP program
         </div>
@@ -30,10 +30,7 @@ export default function StatPanel({ vppMw, vppGoal, heatPumpRebates, vppSources,
           </div>
         </div>
         <div className="h-1.5 bg-surface-border rounded-sm overflow-hidden mb-1.5">
-          <div
-            className="h-full bg-ink rounded-sm"
-            style={{ width: `${pct}%` }}
-          />
+          <div className="h-full bg-ink rounded-sm" style={{ width: `${pct}%` }} />
         </div>
         <div className="text-2xs font-sans text-ink-faint mb-1">
           {pct}% of 2030 target · ~1,000 home batteries
@@ -44,7 +41,7 @@ export default function StatPanel({ vppMw, vppGoal, heatPumpRebates, vppSources,
       </div>
 
       {/* Heat pumps */}
-      <div className="px-5 py-4 border-b border-surface-border flex flex-col">
+      <div className="px-4 md:px-5 py-4 border-b border-surface-border flex flex-col">
         <div className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-3">
           Heat pump momentum
         </div>

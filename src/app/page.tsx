@@ -18,9 +18,9 @@ export default function HomePage() {
   return (
     <>
       {/* Dashboard section */}
-      <section className="bg-surface-dash border-b border-surface-border px-8 pb-0">
+      <section className="bg-surface-dash border-b border-surface-border px-5 md:px-8 pb-0">
         {/* Header */}
-        <div className="pt-7 pb-5">
+        <div className="pt-6 pb-4 md:pt-7 md:pb-5">
           <div className="flex items-baseline gap-2.5 mb-1.5">
             <span className="text-tag font-sans font-bold uppercase tracking-widest text-cc-green">
               Ecosystem Pulse
@@ -29,31 +29,22 @@ export default function HomePage() {
               Updated {dashboardData.updatedAt}
             </span>
           </div>
-          <h1 className="text-3xl font-serif font-extrabold text-ink tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-serif font-extrabold text-ink tracking-tight">
             Colorado's clean energy economy, by the numbers
           </h1>
         </div>
 
-        {/* Top 4 metrics */}
+        {/* Top 4 metrics — 2x2 on mobile, 4 across on desktop */}
         <MetricsRow metrics={dashboardData.metrics} sources={sources} />
 
-        {/* Second row: sector chart + funding + policy */}
-        <div className="grid grid-cols-[2fr_1fr_1fr] border-t border-surface-border border-l border-surface-border">
-          <SectorChart
-            sectors={dashboardData.sectorCounts}
-            sources={[]}
-          />
-          <FundingPanel
-            rounds={dashboardData.recentFunding}
-            sources={sources.recentFunding}
-          />
-          <PolicyPanel
-            legislation={dashboardData.legislation}
-            sources={sources.legislation}
-          />
+        {/* Second row — stacks on mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] border-t border-surface-border border-l border-surface-border">
+          <SectorChart sectors={dashboardData.sectorCounts} sources={[]} />
+          <FundingPanel rounds={dashboardData.recentFunding} sources={sources.recentFunding} />
+          <PolicyPanel legislation={dashboardData.legislation} sources={sources.legislation} />
         </div>
 
-        {/* Third row: VPP + heat pumps */}
+        {/* Third row — stacks on mobile */}
         <StatPanel
           vppMw={dashboardData.vppMw}
           vppGoal={dashboardData.vppGoal}
@@ -64,46 +55,42 @@ export default function HomePage() {
       </section>
 
       {/* Blog section */}
-      <section className="px-8 py-8 max-w-7xl">
-        {/* Section header */}
+      <section className="px-5 md:px-8 py-6 md:py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <span className="text-tag font-sans font-bold uppercase tracking-widest text-ink">
             Latest analysis
           </span>
-          <Link
-            href="/blog"
-            className="text-xs font-sans font-semibold text-cc-green no-underline hover:underline"
-          >
+          <Link href="/blog" className="text-xs font-sans font-semibold text-cc-green no-underline hover:underline">
             All posts →
           </Link>
         </div>
 
         {posts.length === 0 ? (
           <div className="border border-surface-border rounded p-12 text-center">
-            <p className="text-sm font-sans text-ink-muted">
-              Posts coming soon. Check back after launch.
-            </p>
+            <p className="text-sm font-sans text-ink-muted">Posts coming soon.</p>
           </div>
         ) : (
           <>
-            {/* Featured + sidebar */}
-            <div className="grid grid-cols-[3fr_1fr] gap-8 border-b border-surface-border pb-7 mb-7">
+            {/* Featured + sidebar — stacks on mobile */}
+            <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-6 md:gap-8 border-b border-surface-border pb-7 mb-7">
               {featured && <PostCard post={featured} featured />}
-              <div className="border-l border-surface-border pl-7 flex flex-col gap-0">
-                {sidebar.map((post, i) => (
-                  <div
-                    key={post.slug}
-                    className={i < sidebar.length - 1 ? "pb-5 mb-5 border-b border-surface-border" : ""}
-                  >
-                    <PostCard post={post} compact />
-                  </div>
-                ))}
-              </div>
+              {sidebar.length > 0 && (
+                <div className="md:border-l md:border-surface-border md:pl-7 flex flex-col gap-0">
+                  {sidebar.map((post, i) => (
+                    <div
+                      key={post.slug}
+                      className={i < sidebar.length - 1 ? "pb-5 mb-5 border-b border-surface-border" : ""}
+                    >
+                      <PostCard post={post} compact />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Lower 3-col grid */}
+            {/* Lower grid — 1 col on mobile, 3 on desktop */}
             {lower.length > 0 && (
-              <div className="grid grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {lower.map((post) => (
                   <PostCard key={post.slug} post={post} />
                 ))}
