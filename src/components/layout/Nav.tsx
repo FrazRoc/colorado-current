@@ -9,6 +9,7 @@ const links = [
   { href: "/", label: "Dashboard" },
   { href: "/companies", label: "Companies" },
   { href: "/blog", label: "Blog" },
+  { href: "/about", label: "About" },
 ];
 
 export default function Nav() {
@@ -18,7 +19,6 @@ export default function Nav() {
   return (
     <nav className="bg-surface border-b border-surface-border px-5 md:px-8 sticky top-0 z-50">
       <div className="flex items-center justify-between h-14">
-        {/* Logo */}
         <Link href="/" className="no-underline" onClick={() => setOpen(false)}>
           <Logo size="md" />
         </Link>
@@ -42,14 +42,6 @@ export default function Nav() {
             );
           })}
         </div>
-
-        {/* Desktop about button */}
-        <Link
-          href="/about"
-          className="hidden md:block bg-cc-green text-white text-xs font-sans font-semibold uppercase tracking-wider px-4 py-2 rounded no-underline hover:bg-cc-green-dark transition-colors"
-        >
-          About
-        </Link>
 
         {/* Mobile hamburger */}
         <button
@@ -81,13 +73,6 @@ export default function Nav() {
               </Link>
             );
           })}
-          <Link
-            href="/about"
-            onClick={() => setOpen(false)}
-            className="text-sm font-sans font-semibold no-underline py-1 text-ink-muted"
-          >
-            About
-          </Link>
         </div>
       )}
     </nav>
