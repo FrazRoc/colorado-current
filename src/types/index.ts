@@ -110,7 +110,7 @@ export interface DashboardData {
   vppGoal: number;
   heatPumpRebates: number;
   updatedAt: string;
-  emissions: EmissionsData;
+  emissions?: EmissionsData;
   sources: {
     trackedCompanies: DashboardSource[];
     ecosystemFunding: DashboardSource[];
@@ -120,6 +120,6 @@ export interface DashboardData {
     heatPumps: DashboardSource[];
     legislation: DashboardSource[];
     recentFunding: DashboardSource[];
-    emissions: DashboardSource[];
+    emissions?: DashboardSource[];
   };
 }
