@@ -106,26 +106,46 @@ export default function CompanyTable({ companies }: Props) {
                   </div>
                 </div>
                 {isExpanded && (
-                  <div className="px-4 py-3 bg-surface-dash border-t border-surface-divider">
+                  <div className="px-4 py-3 bg-surface-dash border-t border-surface-divider" onClick={(e) => e.stopPropagation()}>
                     <p className="text-sm font-sans text-ink-secondary leading-relaxed mb-2">
                       {company.what_they_do}
                     </p>
                     {company.interesting_angle && (
-                      <p className="text-xs font-sans text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3 mb-2">
+                      <p className="text-xs font-sans text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3 mb-3">
                         {company.interesting_angle}
                       </p>
                     )}
-                    {company.website && (
-                      <a
-                        href={company.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-cc-green hover:underline"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {company.website} →
-                      </a>
-                    )}
+                    {/* Meta fields */}
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 mb-2">
+                      {company.target_customer && (
+                        <span className="text-2xs font-sans text-ink-muted">
+                          <span className="font-semibold text-ink-secondary">Customers:</span> {company.target_customer}
+                        </span>
+                      )}
+                      {company.b_corp === "Yes" && (
+                        <span className="text-2xs font-sans font-semibold text-cc-green">✓ B Corp</span>
+                      )}
+                      {company.last_updated && (
+                        <span className="text-2xs font-sans text-ink-faint">
+                          Updated {new Date(company.last_updated).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                        </span>
+                      )}
+                    </div>
+                    {/* Website + sources */}
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1">
+                      {company.website && (
+                        <a href={company.website} target="_blank" rel="noopener noreferrer"
+                          className="text-xs text-cc-green hover:underline font-semibold">
+                          Website →
+                        </a>
+                      )}
+                      {company.sources && company.sources.split(",").map((s, i) => (
+                        <a key={i} href={s.trim()} target="_blank" rel="noopener noreferrer"
+                          className="text-2xs text-ink-faint hover:text-cc-green">
+                          [{i + 1}]
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -182,25 +202,56 @@ export default function CompanyTable({ companies }: Props) {
                           {isExpanded && (
                             <tr className="bg-surface-dash border-b border-surface-divider">
                               <td colSpan={5} className="px-4 py-4">
-                                <div className="max-w-2xl">
+                                <div className="max-w-3xl">
                                   <p className="text-sm text-ink-secondary leading-relaxed mb-2">
                                     {company.what_they_do}
                                   </p>
                                   {company.interesting_angle && (
-                                    <p className="text-xs text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3">
+                                    <p className="text-xs text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3 mb-3">
                                       {company.interesting_angle}
                                     </p>
                                   )}
-                                  {company.website && (
-                                    <a
-                                      href={company.website}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-xs text-cc-green hover:underline mt-2 inline-block"
-                                    >
-                                      {company.website} →
-                                    </a>
-                                  )}
+                                  {/* Meta row */}
+                                  <div className="flex flex-wrap gap-x-5 gap-y-1 mb-2">
+                                    {company.target_customer && (
+                                      <span className="text-2xs font-sans text-ink-muted">
+                                        <span className="font-semibold text-ink-secondary">Customers:</span> {company.target_customer}
+                                      </span>
+                                    )}
+                                    {company.founded && (
+                                      <span className="text-2xs font-sans text-ink-muted">
+                                        <span className="font-semibold text-ink-secondary">Founded:</span> {company.founded}
+                                      </span>
+                                    )}
+                                    {company.b_corp === "Yes" && (
+                                      <span className="text-2xs font-sans font-semibold text-cc-green">✓ Certified B Corp</span>
+                                    )}
+                                    {company.last_updated && (
+                                      <span className="text-2xs font-sans text-ink-faint">
+                                        Updated {new Date(company.last_updated).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {/* Website + numbered source links */}
+                                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    {company.website && (
+                                      <a href={company.website} target="_blank" rel="noopener noreferrer"
+                                        className="text-xs text-cc-green hover:underline font-semibold">
+                                        Website →
+                                      </a>
+                                    )}
+                                    {company.sources && (
+                                      <span className="text-2xs text-ink-faint">
+                                        Sources:{" "}
+                                        {company.sources.split(",").map((s, i) => (
+                                          <a key={i} href={s.trim()} target="_blank" rel="noopener noreferrer"
+                                            className="text-cc-green hover:underline mx-0.5">
+                                            [{i + 1}]
+                                          </a>
+                                        ))}
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
                               </td>
                             </tr>
