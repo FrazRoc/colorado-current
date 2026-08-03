@@ -10,11 +10,33 @@ interface Props {
 
 const ALL = "All";
 
+type SortKey = "name" | "sector" | "stage" | "funding" | "hq";
+type SortDir = "asc" | "desc";
+
+function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
+  return (
+    <span className={`ml-1 inline-block ${active ? "text-ink" : "text-ink-faint"}`}>
+      {active ? (dir === "asc" ? "↑" : "↓") : "↕"}
+    </span>
+  );
+}
+
 export default function CompanyTable({ companies }: Props) {
   const [sectorFilter, setSectorFilter] = useState(ALL);
   const [stageFilter, setStageFilter] = useState(ALL);
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [sortKey, setSortKey] = useState<SortKey>("name");
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
+
+  function handleSort(key: SortKey) {
+    if (sortKey === key) {
+      setSortDir(sortDir === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  }
 
   const sectors = useMemo(
     () => [ALL, ...Array.from(new Set(companies.map((c) => c.sector))).sort()],
@@ -27,7 +49,7 @@ export default function CompanyTable({ companies }: Props) {
   );
 
   const filtered = useMemo(() => {
-    return companies.filter((c) => {
+    const result = companies.filter((c) => {
       if (sectorFilter !== ALL && c.sector !== sectorFilter) return false;
       if (stageFilter !== ALL && c.stage !== stageFilter) return false;
       if (search) {
@@ -40,7 +62,15 @@ export default function CompanyTable({ companies }: Props) {
       }
       return true;
     });
-  }, [companies, sectorFilter, stageFilter, search]);
+
+    return result.sort((a, b) => {
+      const valA = (a[sortKey] ?? "").toLowerCase();
+      const valB = (b[sortKey] ?? "").toLowerCase();
+      if (valA < valB) return sortDir === "asc" ? -1 : 1;
+      if (valA > valB) return sortDir === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [companies, sectorFilter, stageFilter, search, sortKey, sortDir]);
 
   return (
     <div>
@@ -159,11 +189,16 @@ export default function CompanyTable({ companies }: Props) {
         <table className="w-full text-sm font-sans border-collapse">
           <thead>
             <tr className="border-b-2 border-ink bg-surface-dash">
-              <th className="text-left px-4 py-3 text-2xs font-bold uppercase tracking-widest text-ink-muted">Company</th>
-              <th className="text-left px-4 py-3 text-2xs font-bold uppercase tracking-widest text-ink-muted">Sector</th>
-              <th className="text-left px-4 py-3 text-2xs font-bold uppercase tracking-widest text-ink-muted">Stage</th>
-              <th className="text-left px-4 py-3 text-2xs font-bold uppercase tracking-widest text-ink-muted">Funding</th>
-              <th className="text-left px-4 py-3 text-2xs font-bold uppercase tracking-widest text-ink-muted">HQ</th>
+              {(["name", "sector", "stage", "funding", "hq"] as SortKey[]).map((key) => (
+                <th
+                  key={key}
+                  className="text-left px-4 py-3 text-2xs font-bold uppercase tracking-widest text-ink-muted cursor-pointer hover:text-ink select-none"
+                  onClick={() => handleSort(key)}
+                >
+                  {key === "hq" ? "HQ" : key.charAt(0).toUpperCase() + key.slice(1)}
+                  <SortIcon active={sortKey === key} dir={sortDir} />
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
