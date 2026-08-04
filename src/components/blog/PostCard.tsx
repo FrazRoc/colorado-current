@@ -16,12 +16,12 @@ export default function PostCard({ post, featured = false, compact = false }: Pr
       {/* Type tag + date */}
       <div className="flex items-center gap-2 mb-2">
         <span
-          className="text-tag font-sans font-bold uppercase tracking-wide px-2 py-0.5 rounded-sm"
-          style={{ background: style.bg, color: style.text }}
+          className="font-sans font-bold uppercase px-1.5 py-0.5 rounded-sm whitespace-nowrap"
+          style={{ background: style.bg, color: style.text, fontSize: "9px", letterSpacing: "0.08em" }}
         >
           {post.type}
         </span>
-        <span className="text-2xs font-sans text-ink-faint">
+        <span className="font-sans text-ink-faint" style={{ fontSize: "10px" }}>
           {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {post.readTime}
         </span>
       </div>
