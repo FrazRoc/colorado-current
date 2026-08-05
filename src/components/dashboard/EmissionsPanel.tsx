@@ -29,7 +29,7 @@ export default function EmissionsPanel({ sources }: Props) {
 
       // Dense yearly labels 2005–2035
       const years: number[] = [];
-      for (let y = 2005; y <= 2035; y++) years.push(y);
+      for (let y = 2015; y <= 2035; y++) years.push(y);
 
       // Historical actuals at known points
       const historicalPts: Record<number, number> = {
@@ -74,7 +74,7 @@ export default function EmissionsPanel({ sources }: Props) {
         return null;
       }
 
-      const actual   = years.map(y => y <= 2023 ? interpHistorical(y) : null);
+      const actual   = years.map(y => (y >= 2015 && y <= 2023) ? interpHistorical(y) : null);
       const proj     = years.map(y => y >= 2023 ? interpProj(y) : null);
       const gapUpper = years.map(y => y >= 2025 ? interpProj(y) : null);
       const gapLower = years.map(y => targetLine(y));
@@ -169,7 +169,7 @@ export default function EmissionsPanel({ sources }: Props) {
               type: "scatter",
               borderColor: "#2d8c5e",
               backgroundColor: "#2d8c5e",
-              pointRadius: 5,
+              pointRadius: 3,
               pointStyle: "circle",
               showLine: false,
               order: 1,
@@ -203,14 +203,14 @@ export default function EmissionsPanel({ sources }: Props) {
                 font: { size: 11 },
                 maxRotation: 0,
                 callback: (_: any, i: number) =>
-                  [2005, 2010, 2015, 2020, 2025, 2030, 2035].includes(years[i]) ? years[i] : "",
+                  [2015, 2019, 2020, 2025, 2030, 2035].includes(years[i]) ? years[i] : "",
               },
               grid: { color: grid },
               border: { color: grid },
             },
             y: {
-              min: 40,
-              max: 175,
+              min: 45,
+              max: 155,
               ticks: {
                 color: muted,
                 font: { size: 11 },
