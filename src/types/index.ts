@@ -25,6 +25,7 @@ export type Stage =
   | "Growth"
   | "Late"
   | "Public"
+  | "Acquired"
   | "Established nonprofit"
   | "Established"
   | "R&D / Pilot";
@@ -68,6 +69,16 @@ export interface DashboardMetric {
   deltaPositive?: boolean;
 }
 
+export interface DashboardSource {
+  label: string;
+  url: string;
+}
+
+export interface SectorCount {
+  name: string;
+  count: number;
+}
+
 export interface FundingRound {
   company: string;
   amount: string;
@@ -77,47 +88,34 @@ export interface FundingRound {
   isIpo?: boolean;
 }
 
-export interface Legislation {
+export interface LegislationItem {
   name: string;
-  status: "Signed" | "Active" | "Committee" | "At risk";
-  bill?: string;
-}
-
-export interface EmissionsTarget {
-  year: number;
-  reductionPct: number;
-  targetMmt: number;
+  status: string;
 }
 
 export interface EmissionsData {
-  baseline2005: number;
-  targets: EmissionsTarget[];
-  actual2025Mmt: number;
-  projected2030Mmt: number;
-  yearsBehind: number;
-  note: string;
-}
-
-export interface DashboardSource {
-  label: string;
-  url: string;
+  year: number;
+  actual?: number;
+  target: number;
+  projected?: number;
 }
 
 export interface DashboardData {
+  updatedAt: string;
   metrics: DashboardMetric[];
-  sectorCounts: { name: string; count: number }[];
+  sectorCounts: SectorCount[];
   recentFunding: FundingRound[];
-  legislation: Legislation[];
+  legislation: LegislationItem[];
   vppMw: number;
   vppGoal: number;
   heatPumpRebates: number;
-  updatedAt: string;
   emissions?: EmissionsData;
   sources: {
     trackedCompanies: DashboardSource[];
     ecosystemFunding: DashboardSource[];
     openJobs: DashboardSource[];
     renewableGeneration: DashboardSource[];
+    coal?: DashboardSource[];
     vpp: DashboardSource[];
     heatPumps: DashboardSource[];
     legislation: DashboardSource[];

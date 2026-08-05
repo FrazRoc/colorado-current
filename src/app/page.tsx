@@ -39,8 +39,12 @@ export default async function HomePage() {
           </h1>
         </div>
 
-        {/* Row 1: 3 metrics — 2 col on mobile, 3 on desktop */}
-        <MetricsRow metrics={dashboardData.metrics} sources={sources} />
+        {/* Row 1: 3 metrics — company count pulled dynamically */}
+        <MetricsRow
+          metrics={dashboardData.metrics}
+          sources={sources}
+          companyCount={companies.length}
+        />
 
         {/* Row 2: Sector chart + Recent funding + Legislation */}
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] border-t border-surface-border border-l border-surface-border">
@@ -80,7 +84,6 @@ export default async function HomePage() {
           </div>
         ) : (
           <>
-            {/* Featured + sidebar — stacks on mobile */}
             <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-6 md:gap-8 border-b border-surface-border pb-7 mb-7">
               {featured && <PostCard post={featured} featured />}
               {sidebar.length > 0 && (
@@ -97,7 +100,6 @@ export default async function HomePage() {
               )}
             </div>
 
-            {/* Lower grid */}
             {lower.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {lower.map((post) => (

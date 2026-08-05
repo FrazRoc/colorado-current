@@ -1,13 +1,13 @@
 import type { DashboardData } from "@/types";
 
 const dashboardData: DashboardData = {
-  updatedAt: "July 2026",
+  updatedAt: "August 2026",
 
   metrics: [
     {
-      value: "46",
+      value: "–",  // Populated dynamically from company count in page.tsx
       label: "Tracked companies",
-      delta: "+6 since Jan 2026",
+      delta: "+9 since Jan 2026",
       deltaPositive: true,
     },
     {
@@ -17,29 +17,25 @@ const dashboardData: DashboardData = {
       deltaPositive: false,
     },
     {
-      value: "312",
-      label: "Open jobs",
-      delta: "Across 18 companies",
+      value: "24.7%",
+      label: "Coal generation (2025)",
+      delta: "⚠ Retirements delayed to 2031",
       deltaPositive: false,
-    },
-    {
-      value: "43%",
-      label: "Renewable generation",
-      delta: "of CO electricity, 2025",
-      deltaPositive: true,
     },
   ],
 
   sectorCounts: [
     { name: "Solar & Storage", count: 11 },
     { name: "Grid Software", count: 8 },
+    { name: "Hydrogen", count: 5 },
     { name: "Geothermal", count: 5 },
-    { name: "Home Electrification", count: 4 },
-    { name: "Hydrogen", count: 3 },
-    { name: "Industrial Decarb", count: 3 },
     { name: "EV & Transportation", count: 4 },
-    { name: "Carbon Removal", count: 3 },
+    { name: "Home Electrification", count: 4 },
+    { name: "Carbon Removal", count: 4 },
+    { name: "Industrial Decarb", count: 3 },
+    { name: "Research / Policy", count: 3 },
     { name: "Fusion", count: 1 },
+    { name: "Community Solar", count: 1 },
   ],
 
   recentFunding: [
@@ -99,16 +95,14 @@ const dashboardData: DashboardData = {
       { label: "Crunchbase", url: "https://crunchbase.com" },
       { label: "PitchBook", url: "https://pitchbook.com" },
     ],
-    openJobs: [
-      { label: "ClimateTechList", url: "https://climatetechlist.com" },
-    ],
-    renewableGeneration: [
-      { label: "Colorado Sun", url: "https://coloradosun.com/2026/04/10/colorado-renewable-energy/" },
-      { label: "EIA State Profile", url: "https://www.eia.gov/state/print.php?sid=CO" },
+    openJobs: [],
+    renewableGeneration: [],
+    coal: [
+      { label: "EIA Electric Power Monthly", url: "https://www.eia.gov/electricity/monthly/" },
+      { label: "Colorado Sun", url: "https://coloradosun.com/2025/11/14/comanche-power-plant-retirement-delay/" },
     ],
     vpp: [
       { label: "Utility Dive", url: "https://www.utilitydive.com/news/enphase-vpp-colorado-xcel-energy-battery-connect/739834/" },
-      { label: "Itron press release", url: "https://investors.itron.com/news-releases/news-release-details/xcel-energy-deploy-advanced-virtual-power-plant-colorado-itron" },
     ],
     heatPumps: [
       { label: "Colorado Sun", url: "https://coloradosun.com/2026/02/19/heat-pump-colorado-rebates-contractors/" },

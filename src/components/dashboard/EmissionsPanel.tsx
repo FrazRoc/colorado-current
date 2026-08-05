@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import type { DashboardSource } from "@/types";
 import SourceLinks from "./SourceLinks";
 
@@ -6,85 +9,242 @@ interface Props {
 }
 
 export default function EmissionsPanel({ sources }: Props) {
-  const target2025 = 109;
-  const actual2025 = 115;
-  const target2030 = 73.4;
-  const projected2030 = 76.9;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const chartRef = useRef<any>(null);
 
-  // Bar fill: how far actual is toward target (capped at 100%)
-  const pct2025 = Math.min(100, Math.round((target2025 / actual2025) * 100));
-  const pct2030 = Math.min(100, Math.round((target2030 / projected2030) * 100));
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    import("chart.js").then((ChartModule) => {
+      const { Chart, registerables } = ChartModule;
+      Chart.register(...registerables);
+      if (chartRef.current) {
+        chartRef.current.destroy();
+        chartRef.current = null;
+      }
+
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const grid = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)";
+      const muted = "#898781";
+
+      // Dense yearly labels 2005–2035
+      const years: number[] = [];
+      for (let y = 2005; y <= 2035; y++) years.push(y);
+
+      // Historical actuals at known points
+      const historicalPts: Record<number, number> = {
+        2005: 153, 2007: 156, 2008: 157, 2010: 149,
+        2012: 145, 2015: 143, 2018: 138, 2020: 132,
+        2022: 130, 2023: 129,
+      };
+      const hKeys = Object.keys(historicalPts).map(Number).sort((a, b) => a - b);
+      function interpHistorical(y: number): number | null {
+        if (y > 2023) return null;
+        for (let i = 0; i < hKeys.length - 1; i++) {
+          if (y >= hKeys[i] && y <= hKeys[i + 1]) {
+            const t = (y - hKeys[i]) / (hKeys[i + 1] - hKeys[i]);
+            return historicalPts[hKeys[i]] + t * (historicalPts[hKeys[i + 1]] - historicalPts[hKeys[i]]);
+          }
+        }
+        return historicalPts[y] ?? null;
+      }
+
+      // Projected trajectory 2023–2035
+      const projPts: Record<number, number> = {
+        2023: 129, 2025: 115, 2027: 100, 2028: 95,
+        2030: 83, 2032: 76, 2035: 70,
+      };
+      const pKeys = Object.keys(projPts).map(Number).sort((a, b) => a - b);
+      function interpProj(y: number): number | null {
+        if (y < 2023) return null;
+        for (let i = 0; i < pKeys.length - 1; i++) {
+          if (y >= pKeys[i] && y <= pKeys[i + 1]) {
+            const t = (y - pKeys[i]) / (pKeys[i + 1] - pKeys[i]);
+            return projPts[pKeys[i]] + t * (projPts[pKeys[i + 1]] - projPts[pKeys[i]]);
+          }
+        }
+        return null;
+      }
+
+      // Statutory target line — straight segments 2025→2030→2035
+      function targetLine(y: number): number | null {
+        if (y < 2025) return null;
+        if (y <= 2030) return 113 + (76.5 - 113) * (y - 2025) / 5;
+        if (y <= 2035) return 76.5 + (53.6 - 76.5) * (y - 2030) / 5;
+        return null;
+      }
+
+      const actual   = years.map(y => y <= 2023 ? interpHistorical(y) : null);
+      const proj     = years.map(y => y >= 2023 ? interpProj(y) : null);
+      const gapUpper = years.map(y => y >= 2025 ? interpProj(y) : null);
+      const gapLower = years.map(y => targetLine(y));
+      const tgtDots  = years.map(y => [2025, 2030, 2035].includes(y) ? targetLine(y) : null);
+
+      chartRef.current = new Chart(canvasRef.current!, {
+        type: "line",
+        data: {
+          labels: years,
+          datasets: [
+            {
+              label: "_gapU",
+              data: gapUpper,
+              borderColor: "transparent",
+              backgroundColor: "rgba(163,45,45,0.15)",
+              pointRadius: 0,
+              tension: 0,
+              fill: "+1",
+              spanGaps: false,
+              order: 10,
+            } as any,
+            {
+              label: "_gapL",
+              data: gapLower,
+              borderColor: "#2d8c5e",
+              borderWidth: 1.5,
+              borderDash: [4, 3],
+              backgroundColor: "transparent",
+              pointRadius: 0,
+              tension: 0,
+              fill: false,
+              spanGaps: false,
+              order: 3,
+            } as any,
+            {
+              label: "Actual",
+              data: actual,
+              borderColor: "#c47d1a",
+              backgroundColor: "transparent",
+              borderWidth: 2.5,
+              pointRadius: 0,
+              tension: 0.3,
+              fill: false,
+              spanGaps: false,
+              order: 2,
+            },
+            {
+              label: "Projected",
+              data: proj,
+              borderColor: "#c47d1a",
+              backgroundColor: "transparent",
+              borderWidth: 2.5,
+              borderDash: [6, 4],
+              pointRadius: 0,
+              tension: 0,
+              fill: false,
+              spanGaps: false,
+              order: 2,
+            } as any,
+            {
+              label: "Targets",
+              data: tgtDots,
+              type: "scatter",
+              borderColor: "#2d8c5e",
+              backgroundColor: "#2d8c5e",
+              pointRadius: 5,
+              pointStyle: "circle",
+              showLine: false,
+              order: 1,
+            } as any,
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              filter: (i: any) => !i.dataset.label.startsWith("_"),
+              callbacks: {
+                label: (ctx: any) => {
+                  if (ctx.raw === null) return null;
+                  const map: Record<string, string> = {
+                    Actual: "Actual", Projected: "Projected", Targets: "Target",
+                  };
+                  const n = map[ctx.dataset.label];
+                  return n ? `${n}: ${Math.round(ctx.raw)}M tons` : null;
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                color: muted,
+                font: { size: 11 },
+                maxRotation: 0,
+                callback: (_: any, i: number) =>
+                  [2005, 2010, 2015, 2020, 2025, 2030, 2035].includes(years[i]) ? years[i] : "",
+              },
+              grid: { color: grid },
+              border: { color: grid },
+            },
+            y: {
+              min: 40,
+              max: 175,
+              ticks: {
+                color: muted,
+                font: { size: 11 },
+                stepSize: 25,
+                callback: (v: any) => v + "M",
+              },
+              grid: { color: grid },
+              border: { color: grid },
+              title: {
+                display: true,
+                text: "MMT CO₂e",
+                color: muted,
+                font: { size: 11 },
+              },
+            },
+          },
+        },
+      });
+    });
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+        chartRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <div className="border-t border-surface-border border-l border-surface-border px-4 md:px-5 py-4">
-      <div className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-4">
+      <div className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-3">
         Colorado emissions progress
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        {/* 2025 target */}
-        <div>
-          <div className="flex items-baseline justify-between mb-1.5">
-            <span className="text-xs font-sans font-semibold text-ink">2025 statutory target</span>
-            <span className="text-2xs font-sans text-ink-faint">26% below 2005</span>
-          </div>
-          <div className="relative h-2 bg-surface-border rounded-sm mb-2">
-            <div
-              className="absolute left-0 top-0 h-full bg-cc-green rounded-sm"
-              style={{ width: `${pct2025}%` }}
-            />
-            {/* Target tick mark */}
-            <div className="absolute top-[-3px] h-[14px] w-[2px] bg-ink" style={{ left: "95%" }} />
-          </div>
-          <div className="flex justify-between items-baseline mb-1">
-            <div>
-              <div className="text-2xs font-sans text-ink-faint">Target</div>
-              <div className="text-xs font-sans font-bold text-ink">{target2025}M tons</div>
-            </div>
-            <div className="text-right">
-              <div className="text-2xs font-sans text-ink-faint">Actual</div>
-              <div className="text-xs font-sans font-bold" style={{ color: "#c47d1a" }}>{actual2025}M tons</div>
-            </div>
-          </div>
-          <div className="text-2xs font-sans font-semibold" style={{ color: "#8a1a1a" }}>
-            ⚠ Running ~2 years behind — expected 2027
-          </div>
-        </div>
-
-        {/* 2030 target */}
-        <div>
-          <div className="flex items-baseline justify-between mb-1.5">
-            <span className="text-xs font-sans font-semibold text-ink">2030 statutory target</span>
-            <span className="text-2xs font-sans text-ink-faint">50% below 2005</span>
-          </div>
-          <div className="relative h-2 bg-surface-border rounded-sm mb-2">
-            <div
-              className="absolute left-0 top-0 h-full rounded-sm"
-              style={{ width: `${pct2030}%`, background: "#c47d1a", opacity: 0.7 }}
-            />
-            <div className="absolute top-[-3px] h-[14px] w-[2px] bg-ink" style={{ left: "95%" }} />
-          </div>
-          <div className="flex justify-between items-baseline mb-1">
-            <div>
-              <div className="text-2xs font-sans text-ink-faint">Target</div>
-              <div className="text-xs font-sans font-bold text-ink">{target2030}M tons</div>
-            </div>
-            <div className="text-right">
-              <div className="text-2xs font-sans text-ink-faint">Projected</div>
-              <div className="text-xs font-sans font-bold" style={{ color: "#c47d1a" }}>{projected2030}M tons</div>
-            </div>
-          </div>
-          <div className="text-2xs font-sans font-semibold" style={{ color: "#8a1a1a" }}>
-            ⚠ Tracking to 2031 — gap of 3.5M tons
-          </div>
-        </div>
-
+      <div style={{ position: "relative", width: "100%", height: "240px" }}>
+        <canvas
+          ref={canvasRef}
+          role="img"
+          aria-label="Colorado GHG emissions trajectory vs statutory targets 2005–2035"
+        />
       </div>
 
-      <div className="mt-3">
-        <SourceLinks sources={sources} />
+      {/* Legend */}
+      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 mb-2">
+        <span className="flex items-center gap-1.5 text-2xs font-sans text-ink-muted">
+          <span style={{ display: "inline-block", width: 16, height: 2.5, background: "#c47d1a" }} />
+          Actual
+        </span>
+        <span className="flex items-center gap-1.5 text-2xs font-sans text-ink-muted">
+          <span style={{ display: "inline-block", width: 16, height: 0, borderTop: "2.5px dashed #c47d1a" }} />
+          Projected
+        </span>
+        <span className="flex items-center gap-1.5 text-2xs font-sans text-ink-muted">
+          <span style={{ display: "inline-block", width: 8, height: 8, background: "#2d8c5e", borderRadius: "50%" }} />
+          Statutory targets
+        </span>
+        <span className="flex items-center gap-1.5 text-2xs font-sans text-ink-muted">
+          <span style={{ display: "inline-block", width: 12, height: 8, background: "rgba(163,45,45,0.15)", border: "1px solid rgba(163,45,45,0.3)", borderRadius: 2 }} />
+          Gap
+        </span>
       </div>
+
+      <SourceLinks sources={sources} />
     </div>
   );
 }
