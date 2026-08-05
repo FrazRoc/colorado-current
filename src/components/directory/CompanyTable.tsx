@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Company } from "@/types";
 import { getSectorStyle } from "@/lib/sectors";
 
@@ -22,12 +23,30 @@ function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
 }
 
 export default function CompanyTable({ companies }: Props) {
+  const searchParams = useSearchParams();
   const [sectorFilter, setSectorFilter] = useState(ALL);
   const [stageFilter, setStageFilter] = useState(ALL);
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const expandedRef = useRef<HTMLTableRowElement | HTMLDivElement | null>(null);
+
+  // Auto-expand company from query param (e.g. ?company=Uplight from map click)
+  useEffect(() => {
+    const companyParam = searchParams.get("company");
+    if (companyParam) {
+      setExpanded(companyParam);
+      // Clear filters so the company is visible
+      setSectorFilter(ALL);
+      setStageFilter(ALL);
+      setSearch("");
+      // Scroll to expanded row after render
+      setTimeout(() => {
+        expandedRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 150);
+    }
+  }, [searchParams]);
 
   function handleSort(key: SortKey) {
     if (sortKey === key) {
@@ -106,7 +125,7 @@ export default function CompanyTable({ companies }: Props) {
         </span>
       </div>
 
-      {/* Mobile card view — shown below sm breakpoint */}
+      {/* Mobile card view */}
       <div className="sm:hidden flex flex-col gap-3">
         {filtered.length === 0 ? (
           <p className="text-sm font-sans text-ink-muted text-center py-8">No companies match your filters.</p>
@@ -117,6 +136,7 @@ export default function CompanyTable({ companies }: Props) {
             return (
               <div
                 key={company.name}
+                ref={isExpanded ? (el) => { expandedRef.current = el; } : null}
                 className="border border-surface-border rounded overflow-hidden"
                 onClick={() => setExpanded(isExpanded ? null : company.name)}
               >
@@ -137,43 +157,27 @@ export default function CompanyTable({ companies }: Props) {
                 </div>
                 {isExpanded && (
                   <div className="px-4 py-3 bg-surface-dash border-t border-surface-divider" onClick={(e) => e.stopPropagation()}>
-                    <p className="text-sm font-sans text-ink-secondary leading-relaxed mb-2">
-                      {company.what_they_do}
-                    </p>
+                    <p className="text-sm font-sans text-ink-secondary leading-relaxed mb-2">{company.what_they_do}</p>
                     {company.interesting_angle && (
-                      <p className="text-xs font-sans text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3 mb-3">
-                        {company.interesting_angle}
-                      </p>
+                      <p className="text-xs font-sans text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3 mb-3">{company.interesting_angle}</p>
                     )}
-                    {/* Meta fields */}
                     <div className="flex flex-wrap gap-x-4 gap-y-1 mb-2">
                       {company.target_customer && (
-                        <span className="text-2xs font-sans text-ink-muted">
-                          <span className="font-semibold text-ink-secondary">Customers:</span> {company.target_customer}
-                        </span>
+                        <span className="text-2xs font-sans text-ink-muted"><span className="font-semibold text-ink-secondary">Customers:</span> {company.target_customer}</span>
                       )}
                       {company.b_corp === "Yes" && (
                         <span className="text-2xs font-sans font-semibold text-cc-green">✓ B Corp</span>
                       )}
                       {company.last_updated && (
-                        <span className="text-2xs font-sans text-ink-faint">
-                          Updated {new Date(company.last_updated).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-                        </span>
+                        <span className="text-2xs font-sans text-ink-faint">Updated {new Date(company.last_updated).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
                       )}
                     </div>
-                    {/* Website + sources */}
                     <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1">
                       {company.website && (
-                        <a href={company.website} target="_blank" rel="noopener noreferrer"
-                          className="text-xs text-cc-green hover:underline font-semibold">
-                          Website →
-                        </a>
+                        <a href={company.website} target="_blank" rel="noopener noreferrer" className="text-xs text-cc-green hover:underline font-semibold">Website →</a>
                       )}
                       {company.sources && company.sources.split(",").map((s, i) => (
-                        <a key={i} href={s.trim()} target="_blank" rel="noopener noreferrer"
-                          className="text-2xs text-ink-faint hover:text-cc-green">
-                          [{i + 1}]
-                        </a>
+                        <a key={i} href={s.trim()} target="_blank" rel="noopener noreferrer" className="text-2xs text-ink-faint hover:text-cc-green">[{i + 1}]</a>
                       ))}
                     </div>
                   </div>
@@ -184,7 +188,7 @@ export default function CompanyTable({ companies }: Props) {
         )}
       </div>
 
-      {/* Desktop table — hidden on mobile */}
+      {/* Desktop table */}
       <div className="hidden sm:block border border-surface-border rounded overflow-hidden">
         <table className="w-full text-sm font-sans border-collapse">
           <thead>
@@ -204,9 +208,7 @@ export default function CompanyTable({ companies }: Props) {
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-ink-muted text-sm">
-                  No companies match your filters.
-                </td>
+                <td colSpan={5} className="px-4 py-12 text-center text-ink-muted text-sm">No companies match your filters.</td>
               </tr>
             ) : (
               filtered.map((company) => {
@@ -218,15 +220,13 @@ export default function CompanyTable({ companies }: Props) {
                       <table className="w-full border-collapse">
                         <tbody>
                           <tr
+                            ref={isExpanded ? (el) => { expandedRef.current = el; } : null}
                             className="border-b border-surface-divider hover:bg-surface-dash cursor-pointer transition-colors"
                             onClick={() => setExpanded(isExpanded ? null : company.name)}
                           >
                             <td className="px-4 py-3 font-semibold text-ink w-1/5">{company.name}</td>
                             <td className="px-4 py-3 w-1/5">
-                              <span
-                                className="text-tag font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm"
-                                style={{ background: style.bg, color: style.text }}
-                              >
+                              <span className="text-tag font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm" style={{ background: style.bg, color: style.text }}>
                                 {company.sector}
                               </span>
                             </td>
@@ -238,51 +238,33 @@ export default function CompanyTable({ companies }: Props) {
                             <tr className="bg-surface-dash border-b border-surface-divider">
                               <td colSpan={5} className="px-4 py-4">
                                 <div className="max-w-3xl">
-                                  <p className="text-sm text-ink-secondary leading-relaxed mb-2">
-                                    {company.what_they_do}
-                                  </p>
+                                  <p className="text-sm text-ink-secondary leading-relaxed mb-2">{company.what_they_do}</p>
                                   {company.interesting_angle && (
-                                    <p className="text-xs text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3 mb-3">
-                                      {company.interesting_angle}
-                                    </p>
+                                    <p className="text-xs text-ink-muted leading-relaxed border-l-2 border-cc-green pl-3 mb-3">{company.interesting_angle}</p>
                                   )}
-                                  {/* Meta row */}
                                   <div className="flex flex-wrap gap-x-5 gap-y-1 mb-2">
                                     {company.target_customer && (
-                                      <span className="text-2xs font-sans text-ink-muted">
-                                        <span className="font-semibold text-ink-secondary">Customers:</span> {company.target_customer}
-                                      </span>
+                                      <span className="text-2xs font-sans text-ink-muted"><span className="font-semibold text-ink-secondary">Customers:</span> {company.target_customer}</span>
                                     )}
                                     {company.founded && (
-                                      <span className="text-2xs font-sans text-ink-muted">
-                                        <span className="font-semibold text-ink-secondary">Founded:</span> {company.founded}
-                                      </span>
+                                      <span className="text-2xs font-sans text-ink-muted"><span className="font-semibold text-ink-secondary">Founded:</span> {company.founded}</span>
                                     )}
                                     {company.b_corp === "Yes" && (
                                       <span className="text-2xs font-sans font-semibold text-cc-green">✓ Certified B Corp</span>
                                     )}
                                     {company.last_updated && (
-                                      <span className="text-2xs font-sans text-ink-faint">
-                                        Updated {new Date(company.last_updated).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-                                      </span>
+                                      <span className="text-2xs font-sans text-ink-faint">Updated {new Date(company.last_updated).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
                                     )}
                                   </div>
-                                  {/* Website + numbered source links */}
                                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                                     {company.website && (
-                                      <a href={company.website} target="_blank" rel="noopener noreferrer"
-                                        className="text-xs text-cc-green hover:underline font-semibold">
-                                        Website →
-                                      </a>
+                                      <a href={company.website} target="_blank" rel="noopener noreferrer" className="text-xs text-cc-green hover:underline font-semibold">Website →</a>
                                     )}
                                     {company.sources && (
                                       <span className="text-2xs text-ink-faint">
                                         Sources:{" "}
                                         {company.sources.split(",").map((s, i) => (
-                                          <a key={i} href={s.trim()} target="_blank" rel="noopener noreferrer"
-                                            className="text-cc-green hover:underline mx-0.5">
-                                            [{i + 1}]
-                                          </a>
+                                          <a key={i} href={s.trim()} target="_blank" rel="noopener noreferrer" className="text-cc-green hover:underline mx-0.5">[{i + 1}]</a>
                                         ))}
                                       </span>
                                     )}

@@ -44,6 +44,8 @@ export interface Company {
   last_updated?: string;
   sources?: string;
   notes?: string;
+  lat?: number;
+  lng?: number;
 }
 
 export type PostType = "Company spotlight" | "Industry analysis" | "Deep dive" | "Policy";

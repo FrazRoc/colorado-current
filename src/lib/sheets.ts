@@ -1,8 +1,5 @@
 import type { Company } from "@/types";
 
-// Publish your Google Sheet as CSV:
-// File → Share → Publish to web → CSV → Copy URL
-// Then set NEXT_PUBLIC_SHEETS_CSV_URL in .env.local
 const SHEETS_URL = process.env.NEXT_PUBLIC_SHEETS_CSV_URL || "";
 
 export async function fetchCompanies(): Promise<Company[]> {
@@ -12,17 +9,12 @@ export async function fetchCompanies(): Promise<Company[]> {
   }
 
   try {
-    // Force no-cache to ensure fresh data on each request during dev
     const res = await fetch(SHEETS_URL, {
       next: { revalidate: 3600 },
-      cache: "no-store",
-      headers: {
-        "Accept": "text/csv,text/plain,*/*",
-      },
     });
 
     if (!res.ok) {
-      console.error(`Sheets fetch failed: ${res.status} ${res.statusText} — URL: ${SHEETS_URL}`);
+      console.error(`Sheets fetch failed: ${res.status} ${res.statusText}`);
       return [];
     }
 
@@ -33,9 +25,8 @@ export async function fetchCompanies(): Promise<Company[]> {
       return [];
     }
 
-    // Detect if we got an HTML error page instead of CSV
     if (csv.trim().startsWith("<")) {
-      console.error("Sheets returned HTML instead of CSV — check that the sheet is published to web as CSV");
+      console.error("Sheets returned HTML instead of CSV — check publish settings");
       return [];
     }
 
@@ -52,32 +43,36 @@ function parseCSV(csv: string): Company[] {
   const lines = csv.trim().split("\n");
   if (lines.length < 2) return [];
 
-  // Parse header row
-  const headers = parseCSVRow(lines[0]);
+  const headers = parseCSVRow(lines[0]).map((h) => h.trim().toLowerCase());
 
   return lines.slice(1).map((line) => {
     const values = parseCSVRow(line);
     const row: Record<string, string> = {};
     headers.forEach((h, i) => {
-      row[h.trim()] = values[i]?.trim() || "";
+      row[h] = values[i]?.trim() || "";
     });
 
     return {
-      name: row.name || row.Name || "",
-      hq: row.hq || row.HQ || "",
-      sector: (row.sector || row.Sector || "Grid Software") as Company["sector"],
-      stage: (row.stage || row.Stage || "Early") as Company["stage"],
-      funding: row.funding || row.Funding || "",
-      what_they_do: row.what_they_do || row["What they do"] || "",
-      interesting_angle: row.interesting_angle || row["Interesting angle"] || "",
-      source: row.source || row.Source || "",
-      website: row.website || row.Website || "",
-      founded: row.founded || row.Founded || "",
+      name: row.name || "",
+      hq: row.hq || "",
+      sector: (row.sector || "Grid Software") as Company["sector"],
+      stage: (row.stage || "Early") as Company["stage"],
+      funding: row.funding || "",
+      what_they_do: row.what_they_do || "",
+      interesting_angle: row.interesting_angle || "",
+      website: row.website || "",
+      founded: row.founded || "",
+      b_corp: row.b_corp || "",
+      target_customer: row.target_customer || "",
+      last_updated: row.last_updated || "",
+      sources: row.sources || row.source || "",
+      notes: row.notes || "",
+      lat: row.lat ? parseFloat(row.lat) : undefined,
+      lng: row.lng ? parseFloat(row.lng) : undefined,
     } as Company;
   }).filter((c) => c.name.length > 0);
 }
 
-// Handle quoted CSV values correctly
 function parseCSVRow(line: string): string[] {
   const result: string[] = [];
   let current = "";

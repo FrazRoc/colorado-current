@@ -126,6 +126,10 @@ const dashboardData: DashboardData = {
       { label: "Koloma Crunchbase", url: "https://tracxn.com/d/companies/koloma" },
       { label: "Pivot Energy", url: "https://inven.ai/company/pivot-energy" },
     ],
+    emissions: [
+      { label: "Colorado Sun", url: "https://coloradosun.com/2025/12/23/colorado-greenhouse-gas-cuts-falling-behind/" },
+      { label: "Colorado Newsline", url: "https://coloradonewsline.com/2025/12/29/colorado-officially-falls-short-greenhouse-gas/" },
+    ],
   },
 };
 

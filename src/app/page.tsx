@@ -3,22 +3,27 @@ import MetricsRow from "@/components/dashboard/MetricsRow";
 import SectorChart from "@/components/dashboard/SectorChart";
 import FundingPanel from "@/components/dashboard/FundingPanel";
 import PolicyPanel from "@/components/dashboard/PolicyPanel";
-import StatPanel from "@/components/dashboard/StatPanel";
+import EmissionsPanel from "@/components/dashboard/EmissionsPanel";
+import MapPanel from "@/components/dashboard/MapPanel";
+import HeatPumpPanel from "@/components/dashboard/HeatPumpPanel";
 import PostCard from "@/components/blog/PostCard";
 import dashboardData from "@/data/dashboard";
 import { getAllPosts } from "@/lib/posts";
+import { fetchCompanies } from "@/lib/sheets";
 
-export default function HomePage() {
+export default async function HomePage() {
   const posts = getAllPosts().slice(0, 5);
   const featured = posts[0];
   const sidebar = posts.slice(1, 3);
   const lower = posts.slice(3, 6);
   const { sources } = dashboardData;
+  const companies = await fetchCompanies();
 
   return (
     <>
       {/* Dashboard section */}
       <section className="bg-surface-dash border-b border-surface-border px-5 md:px-8 pb-0">
+
         {/* Header */}
         <div className="pt-6 pb-4 md:pt-7 md:pb-5">
           <div className="flex items-baseline gap-2.5 mb-1.5">
@@ -34,24 +39,28 @@ export default function HomePage() {
           </h1>
         </div>
 
-        {/* Top 4 metrics — 2x2 on mobile, 4 across on desktop */}
+        {/* Row 1: 3 metrics — 2 col on mobile, 3 on desktop */}
         <MetricsRow metrics={dashboardData.metrics} sources={sources} />
 
-        {/* Second row — stacks on mobile */}
+        {/* Row 2: Sector chart + Recent funding + Legislation */}
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] border-t border-surface-border border-l border-surface-border">
           <SectorChart sectors={dashboardData.sectorCounts} sources={[]} />
           <FundingPanel rounds={dashboardData.recentFunding} sources={sources.recentFunding} />
           <PolicyPanel legislation={dashboardData.legislation} sources={sources.legislation} />
         </div>
 
-        {/* Third row — stacks on mobile */}
-        <StatPanel
-          vppMw={dashboardData.vppMw}
-          vppGoal={dashboardData.vppGoal}
-          heatPumpRebates={dashboardData.heatPumpRebates}
-          vppSources={sources.vpp}
-          heatPumpSources={sources.heatPumps}
-        />
+        {/* Row 3: Emissions progress tracker */}
+        <EmissionsPanel sources={sources.emissions ?? []} />
+
+        {/* Row 4: Map + Heat pumps */}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] border-t border-surface-border border-l border-surface-border">
+          <MapPanel companies={companies} />
+          <HeatPumpPanel
+            rebates={dashboardData.heatPumpRebates}
+            sources={sources.heatPumps}
+          />
+        </div>
+
       </section>
 
       {/* Blog section */}
@@ -88,7 +97,7 @@ export default function HomePage() {
               )}
             </div>
 
-            {/* Lower grid — 1 col on mobile, 3 on desktop */}
+            {/* Lower grid */}
             {lower.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {lower.map((post) => (
