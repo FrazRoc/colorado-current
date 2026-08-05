@@ -185,13 +185,14 @@ export default function EmissionsPanel({ sources }: Props) {
             tooltip: {
               filter: (i: any) => !i.dataset.label.startsWith("_"),
               callbacks: {
-                label: (ctx: any) => {
-                  if (ctx.raw === null) return undefined;
+                label: (ctx: any): string | void => {
+                  if (ctx.raw === null || ctx.raw === undefined) return;
                   const map: Record<string, string> = {
                     Actual: "Actual", Projected: "Projected", Targets: "Target",
                   };
                   const n = map[ctx.dataset.label];
-                  return n ? `${n}: ${Math.round(ctx.raw)}M tons` : null;
+                  if (!n) return;
+                  return `${n}: ${Math.round(ctx.raw)}M tons`;
                 },
               },
             },
