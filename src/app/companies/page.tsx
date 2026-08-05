@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { fetchCompanies } from "@/lib/sheets";
 import CompanyTable from "@/components/directory/CompanyTable";
 
@@ -7,7 +8,6 @@ export const metadata: Metadata = {
   description: "Directory of 40+ Colorado clean energy companies tracked by Colorado Current.",
 };
 
-// Don't cache this page — always fetch fresh from Sheets
 export const revalidate = 3600;
 
 export default async function CompaniesPage() {
@@ -28,7 +28,9 @@ export default async function CompaniesPage() {
           </p>
         )}
       </div>
-      <CompanyTable companies={companies} />
+      <Suspense fallback={<div className="text-sm font-sans text-ink-muted py-8">Loading companies...</div>}>
+        <CompanyTable companies={companies} />
+      </Suspense>
     </div>
   );
 }
