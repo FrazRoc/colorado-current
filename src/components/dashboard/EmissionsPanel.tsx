@@ -186,7 +186,7 @@ export default function EmissionsPanel({ sources }: Props) {
               filter: (i: any) => !i.dataset.label.startsWith("_"),
               callbacks: {
                 label: (ctx: any) => {
-                  if (ctx.raw === null) return null;
+                  if (ctx.raw === null) return undefined;
                   const map: Record<string, string> = {
                     Actual: "Actual", Projected: "Projected", Targets: "Target",
                   };
