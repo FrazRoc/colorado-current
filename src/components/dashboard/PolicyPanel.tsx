@@ -1,9 +1,9 @@
-import type { Legislation, DashboardSource } from "@/types";
+import type { LegislationItem, DashboardSource } from "@/types";
 import { LEGISLATION_STYLES } from "@/lib/sectors";
 import SourceLinks from "./SourceLinks";
 
 interface Props {
-  legislation: Legislation[];
+  legislation: LegislationItem[];
   sources: DashboardSource[];
 }
 
