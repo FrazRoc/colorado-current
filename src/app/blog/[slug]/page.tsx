@@ -45,15 +45,53 @@ export default async function PostPage({ params }: Props) {
       </h1>
 
       {/* Meta */}
-      <div className="text-xs font-sans text-ink-faint mb-8 pb-8 border-b border-surface-border">
+      <div className="text-xs font-sans text-ink-faint mb-10 pb-8 border-b border-surface-border">
         {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {post.readTime}
       </div>
 
       {/* Content */}
-      <div className="prose prose-sm md:prose-base max-w-none font-sans text-ink-secondary leading-relaxed
-        prose-headings:font-serif prose-headings:text-ink
-        prose-p:mb-4 prose-p:leading-relaxed
-        prose-a:text-cc-green prose-a:no-underline hover:prose-a:underline">
+      <div className="
+        max-w-none
+        font-sans
+        text-base
+        text-ink-secondary
+        leading-[1.85]
+        [&>p]:mb-6
+        [&>p]:text-base
+        [&>p]:leading-[1.85]
+        [&>h2]:font-serif
+        [&>h2]:font-bold
+        [&>h2]:text-ink
+        [&>h2]:text-xl
+        [&>h2]:mt-10
+        [&>h2]:mb-4
+        [&>h3]:font-serif
+        [&>h3]:font-bold
+        [&>h3]:text-ink
+        [&>h3]:text-lg
+        [&>h3]:mt-8
+        [&>h3]:mb-3
+        [&>ul]:mb-6
+        [&>ul]:pl-5
+        [&>ul>li]:mb-2
+        [&>ol]:mb-6
+        [&>ol]:pl-5
+        [&>ol>li]:mb-2
+        [&>blockquote]:border-l-2
+        [&>blockquote]:border-cc-green
+        [&>blockquote]:pl-4
+        [&>blockquote]:text-ink-muted
+        [&>blockquote]:italic
+        [&>blockquote]:my-6
+        [&>img]:rounded
+        [&>img]:my-8
+        [&>img]:w-full
+        [&_a]:text-cc-green
+        [&_a]:no-underline
+        [&_a:hover]:underline
+        [&_strong]:text-ink
+        [&_strong]:font-semibold
+      ">
         {post.content && <MDXRemote source={post.content} />}
       </div>
 
