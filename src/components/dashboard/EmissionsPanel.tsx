@@ -80,7 +80,36 @@ export default function EmissionsPanel({ sources }: Props) {
       const gapLower = years.map(y => targetLine(y));
       const tgtDots  = years.map(y => [2025, 2030, 2035].includes(y) ? targetLine(y) : null);
 
+      const annotationPlugin = {
+        id: "annotation2019",
+        afterDraw(chart: any) {
+          const ctx = chart.ctx;
+          const xScale = chart.scales.x;
+          const yScale = chart.scales.y;
+          const idx = years.indexOf(2019);
+          if (idx === -1) return;
+          const x = xScale.getPixelForValue(idx);
+          const yTop = yScale.getPixelForValue(yScale.max);
+          const yBottom = yScale.getPixelForValue(yScale.min);
+          ctx.save();
+          ctx.beginPath();
+          ctx.setLineDash([4, 3]);
+          ctx.strokeStyle = isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.25)";
+          ctx.lineWidth = 1;
+          ctx.moveTo(x, yTop);
+          ctx.lineTo(x, yBottom);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.font = "10px system-ui, sans-serif";
+          ctx.fillStyle = isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.38)";
+          ctx.textAlign = "center";
+          ctx.fillText("HB 19-1261", x, yTop + 11);
+          ctx.restore();
+        },
+      };
+
       chartRef.current = new Chart(canvasRef.current!, {
+        plugins: [annotationPlugin],
         type: "line",
         data: {
           labels: years,
