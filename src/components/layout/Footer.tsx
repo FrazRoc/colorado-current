@@ -26,7 +26,7 @@ export default function Footer() {
           <div>
             <div className="font-semibold text-ink uppercase tracking-wider mb-3">Connect</div>
             <div className="flex flex-col gap-2 text-ink-muted">
-              <a href="https://linkedin.com/in/evanfrasz" target="_blank" rel="noopener noreferrer" className="hover:text-ink no-underline">LinkedIn</a>
+              <a href="https://www.linkedin.com/company/colorado-current" target="_blank" rel="noopener noreferrer" className="hover:text-ink no-underline">LinkedIn</a>
               <a href="https://github.com/FrazRoc" target="_blank" rel="noopener noreferrer" className="hover:text-ink no-underline">GitHub</a>
             </div>
           </div>
