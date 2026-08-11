@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s | Colorado Current",
   },
   description:
-    "Independent analysis of Colorado's clean energy startup ecosystem. Tracking companies, capital, and policy shaping the state's energy future.",
+    "Independent analysis of Colorado's clean energy startup ecosystem — companies, capital, and policy shaping the state's energy future.",
   metadataBase: new URL("https://coloradocurrent.com"),
   icons: {
     icon: "/favicon.svg",
