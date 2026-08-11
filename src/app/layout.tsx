@@ -19,6 +19,18 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: "Colorado Current",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Colorado Current — Clean Energy Ecosystem",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.png"],
   },
 };
 
