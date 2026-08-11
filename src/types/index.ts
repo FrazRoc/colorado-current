@@ -45,6 +45,7 @@ export interface Company {
   last_updated?: string;
   sources?: string;
   notes?: string;
+  jobs_url?: string;
   lat?: number;
   lng?: number;
 }

@@ -67,6 +67,7 @@ function parseCSV(csv: string): Company[] {
       last_updated: row.last_updated || "",
       sources: row.sources || row.source || "",
       notes: row.notes || "",
+      jobs_url: row.jobs_url || "",
       lat: row.lat ? parseFloat(row.lat) : undefined,
       lng: row.lng ? parseFloat(row.lng) : undefined,
     } as Company;

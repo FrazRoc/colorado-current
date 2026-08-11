@@ -176,6 +176,9 @@ export default function CompanyTable({ companies }: Props) {
                       {company.website && (
                         <a href={company.website} target="_blank" rel="noopener noreferrer" className="text-xs text-cc-green hover:underline font-semibold">Website →</a>
                       )}
+                      {company.jobs_url && (
+                        <a href={company.jobs_url} target="_blank" rel="noopener noreferrer" className="text-xs text-cc-green hover:underline font-semibold">Jobs →</a>
+                      )}
                       {company.sources && company.sources.split(",").map((s, i) => (
                         <a key={i} href={s.trim()} target="_blank" rel="noopener noreferrer" className="text-2xs text-ink-faint hover:text-cc-green">[{i + 1}]</a>
                       ))}
@@ -259,6 +262,9 @@ export default function CompanyTable({ companies }: Props) {
                                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                                     {company.website && (
                                       <a href={company.website} target="_blank" rel="noopener noreferrer" className="text-xs text-cc-green hover:underline font-semibold">Website →</a>
+                                    )}
+                                    {company.jobs_url && (
+                                      <a href={company.jobs_url} target="_blank" rel="noopener noreferrer" className="text-xs text-cc-green hover:underline font-semibold">Jobs →</a>
                                     )}
                                     {company.sources && (
                                       <span className="text-2xs text-ink-faint">
