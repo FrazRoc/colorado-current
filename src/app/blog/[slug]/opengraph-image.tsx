@@ -51,7 +51,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
             {/* Type tag */}
             <div
               style={{
-                display: "inline-flex",
+                display: "flex",
                 background: accentColor,
                 color: "white",
                 fontSize: 13,
