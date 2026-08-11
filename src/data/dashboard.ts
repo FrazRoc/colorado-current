@@ -1,13 +1,16 @@
 import type { DashboardData } from "@/types";
 
+function getCurrentMonthYear(): string {
+  return new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" });
+}
+
 const dashboardData: DashboardData = {
-  updatedAt: "August 2026",
+  updatedAt: getCurrentMonthYear(),
 
   metrics: [
     {
-      value: "–",  // Populated dynamically from company count in page.tsx
+      value: "–",
       label: "Tracked companies",
-      delta: "+9 since Jan 2026",
       deltaPositive: true,
     },
     {
