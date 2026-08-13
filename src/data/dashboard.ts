@@ -14,9 +14,9 @@ const dashboardData: DashboardData = {
       deltaPositive: true,
     },
     {
-      value: "$4.4B",
+      value: "$4.5B",
       label: "Ecosystem funding",
-      delta: "31 funded companies",
+      delta: "24 companies with disclosed funding",
       deltaPositive: false,
     },
     {
