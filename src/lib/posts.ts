@@ -26,7 +26,6 @@ export function getAllPosts(): Post[] {
     } as Post;
   });
 
-  // Sort newest first
   return posts.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -48,5 +47,6 @@ export function getPostBySlug(slug: string): Post | null {
     type: data.type || "Industry analysis",
     sector: data.sector || "",
     content,
+    sources: data.sources || [],
   } as Post;
 }

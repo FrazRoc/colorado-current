@@ -52,6 +52,11 @@ export interface Company {
 
 export type PostType = "Company spotlight" | "Industry analysis" | "Deep dive" | "Policy";
 
+export interface PostSource {
+  label: string;
+  url: string;
+}
+
 export interface Post {
   slug: string;
   title: string;
@@ -61,6 +66,7 @@ export interface Post {
   type: PostType;
   sector?: string;
   content?: string;
+  sources?: PostSource[];
 }
 
 export interface DashboardMetric {
