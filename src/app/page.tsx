@@ -1,11 +1,11 @@
 import Link from "next/link";
 import MetricsRow from "@/components/dashboard/MetricsRow";
 import SectorChart from "@/components/dashboard/SectorChart";
-import FundingPanel from "@/components/dashboard/FundingPanel";
 import PolicyPanel from "@/components/dashboard/PolicyPanel";
 import EmissionsPanel from "@/components/dashboard/EmissionsPanel";
 import MapPanel from "@/components/dashboard/MapPanel";
 import SectorEmissionsPanel from "@/components/dashboard/SectorEmissionsPanel";
+import FundingTicker from "@/components/dashboard/FundingTicker";
 import PostCard from "@/components/blog/PostCard";
 import dashboardData from "@/data/dashboard";
 import { getAllPosts } from "@/lib/posts";
@@ -23,6 +23,7 @@ export default async function HomePage() {
     <>
       <section className="bg-surface-dash border-b border-surface-border px-5 md:px-8 pb-0">
 
+        {/* Header */}
         <div className="pt-6 pb-4 md:pt-7 md:pb-5">
           <div className="flex items-baseline gap-2.5 mb-1.5">
             <span className="text-tag font-sans font-bold uppercase tracking-widest text-cc-green">
@@ -44,17 +45,19 @@ export default async function HomePage() {
           companyCount={companies.length}
         />
 
-        {/* Row 2: Sector chart + Recent funding + Legislation */}
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] border-t border-surface-border border-l border-surface-border">
+        {/* Funding ticker — between Row 1 and Row 2 */}
+        <FundingTicker />
+
+        {/* Row 2: Sector chart + Legislation */}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] border-t border-surface-border border-l border-surface-border">
           <SectorChart sectors={dashboardData.sectorCounts} sources={[]} />
-          <FundingPanel rounds={dashboardData.recentFunding} sources={sources.recentFunding} />
           <PolicyPanel legislation={dashboardData.legislation} sources={sources.legislation} />
         </div>
 
         {/* Row 3: Emissions progress tracker */}
         <EmissionsPanel sources={sources.emissions ?? []} />
 
-        {/* Row 4: Map + Sector emissions chart — equal split */}
+        {/* Row 4: Map + Sector emissions chart */}
         <div className="grid grid-cols-1 md:grid-cols-2 border-t border-surface-border border-l border-surface-border">
           <MapPanel companies={companies} />
           <div className="border-l border-surface-border">
@@ -64,6 +67,7 @@ export default async function HomePage() {
 
       </section>
 
+      {/* Blog section */}
       <section className="px-5 md:px-8 py-6 md:py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <span className="text-tag font-sans font-bold uppercase tracking-widest text-ink">
@@ -95,7 +99,6 @@ export default async function HomePage() {
                 </div>
               )}
             </div>
-
             {lower.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {lower.map((post) => (
