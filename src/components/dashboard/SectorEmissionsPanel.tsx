@@ -146,7 +146,7 @@ export default function SectorEmissionsPanel() {
                 color: muted,
                 font: { size: 10 },
                 stepSize: 10,
-                callback: (v: any): string | void => v + " Tg",
+                callback: (v: any) => v + " Tg",
               },
               grid: { color: grid },
               border: { color: grid },
