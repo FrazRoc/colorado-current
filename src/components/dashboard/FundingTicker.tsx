@@ -12,7 +12,6 @@ const deals = [
   { company: "Pivot Energy", amount: "$450M", type: "Project finance", date: "Nov 2024" },
   { company: "Xcimer Energy", amount: "$100M", type: "Series B", date: "2024" },
   { company: "Steelhead Composites", amount: "$57.5M", type: "Series B", date: "2024" },
-  { company: "Starfire Energy", amount: "$34.3M", type: "Series B", date: "2024" },
   { company: "Emporia", amount: "$16M", type: "Strategic", date: "2025" },
   { company: "Lightship", amount: "$81M", type: "Series B", date: "2023" },
   { company: "Crusoe Energy Systems", amount: "$686M", type: "Series D", date: "2023" },
@@ -44,7 +43,6 @@ export default function FundingTicker() {
         }
       `}</style>
 
-      {/* Label */}
       <div
         className="absolute left-0 top-0 h-full flex items-center gap-1.5 border-r border-surface-border bg-surface-dash z-10"
         style={{ padding: "0 12px" }}
@@ -55,7 +53,6 @@ export default function FundingTicker() {
         </span>
       </div>
 
-      {/* Scrolling track */}
       <div
         ref={trackRef}
         className="flex items-center h-full"
