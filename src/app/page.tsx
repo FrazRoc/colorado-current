@@ -6,6 +6,7 @@ import EmissionsPanel from "@/components/dashboard/EmissionsPanel";
 import MapPanel from "@/components/dashboard/MapPanel";
 import SectorEmissionsPanel from "@/components/dashboard/SectorEmissionsPanel";
 import FundingTicker from "@/components/dashboard/FundingTicker";
+import JobsMetric from "@/components/dashboard/JobsMetric";
 import PostCard from "@/components/blog/PostCard";
 import dashboardData from "@/data/dashboard";
 import { getAllPosts } from "@/lib/posts";
@@ -23,7 +24,6 @@ export default async function HomePage() {
     <>
       <section className="bg-surface-dash border-b border-surface-border px-5 md:px-8 pb-0">
 
-        {/* Header */}
         <div className="pt-6 pb-4 md:pt-7 md:pb-5">
           <div className="flex items-baseline gap-2.5 mb-1.5">
             <span className="text-tag font-sans font-bold uppercase tracking-widest text-cc-green">
@@ -38,14 +38,39 @@ export default async function HomePage() {
           </h1>
         </div>
 
-        {/* Row 1: 3 metrics */}
-        <MetricsRow
-          metrics={dashboardData.metrics}
-          sources={sources}
-          companyCount={companies.length}
-        />
+        {/* Row 1: companies, funding, open jobs */}
+        <div className="grid grid-cols-2 md:grid-cols-3 border-t-[3px] border-ink border-l border-surface-border">
+          {/* Companies — dynamic */}
+          <div className="px-4 md:px-5 py-4 md:py-5 border-r border-surface-border border-b md:border-b-0 flex flex-col">
+            <div className="text-3xl md:text-4xl font-serif font-extrabold text-ink leading-none tracking-tight">
+              {companies.length}
+            </div>
+            <div className="text-2xs font-sans text-ink-muted uppercase tracking-widest mt-1.5 mb-1">
+              Tracked companies
+            </div>
+            <div className="text-xs font-sans font-semibold text-cc-green">
+              Across 11 sectors
+            </div>
+          </div>
 
-        {/* Funding ticker — between Row 1 and Row 2 */}
+          {/* Ecosystem funding */}
+          <div className="px-4 md:px-5 py-4 md:py-5 border-r border-surface-border border-b md:border-b-0 flex flex-col">
+            <div className="text-3xl md:text-4xl font-serif font-extrabold text-ink leading-none tracking-tight">
+              $4.5B
+            </div>
+            <div className="text-2xs font-sans text-ink-muted uppercase tracking-widest mt-1.5 mb-1">
+              Ecosystem funding
+            </div>
+            <div className="text-xs font-sans text-ink-muted">
+              24 companies with disclosed funding
+            </div>
+          </div>
+
+          {/* Open jobs — live from ATS APIs */}
+          <JobsMetric />
+        </div>
+
+        {/* Funding ticker */}
         <FundingTicker />
 
         {/* Row 2: Sector chart + Legislation */}
@@ -67,7 +92,6 @@ export default async function HomePage() {
 
       </section>
 
-      {/* Blog section */}
       <section className="px-5 md:px-8 py-6 md:py-8 max-w-7xl">
         <div className="flex items-center justify-between mb-6">
           <span className="text-tag font-sans font-bold uppercase tracking-widest text-ink">
@@ -89,10 +113,7 @@ export default async function HomePage() {
               {sidebar.length > 0 && (
                 <div className="md:border-l md:border-surface-border md:pl-7 flex flex-col gap-0">
                   {sidebar.map((post, i) => (
-                    <div
-                      key={post.slug}
-                      className={i < sidebar.length - 1 ? "pb-5 mb-5 border-b border-surface-border" : ""}
-                    >
+                    <div key={post.slug} className={i < sidebar.length - 1 ? "pb-5 mb-5 border-b border-surface-border" : ""}>
                       <PostCard post={post} compact />
                     </div>
                   ))}
