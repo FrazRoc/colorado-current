@@ -92,7 +92,7 @@ export default async function HomePage() {
 
       </section>
 
-      <section className="px-5 md:px-8 py-6 md:py-8 max-w-7xl">
+      <section className="px-5 md:px-8 py-6 md:py-8 max-w-5xl">
         <div className="flex items-center justify-between mb-6">
           <span className="text-tag font-sans font-bold uppercase tracking-widest text-ink">
             Latest analysis
@@ -108,7 +108,7 @@ export default async function HomePage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-6 md:gap-8 border-b border-surface-border pb-7 mb-7">
+            <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6 md:gap-8 border-b border-surface-border pb-7 mb-7">
               {featured && <PostCard post={featured} featured />}
               {sidebar.length > 0 && (
                 <div className="md:border-l md:border-surface-border md:pl-7 flex flex-col gap-0">

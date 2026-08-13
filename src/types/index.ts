@@ -67,6 +67,7 @@ export interface Post {
   sector?: string;
   content?: string;
   sources?: PostSource[];
+  image?: string | null;
 }
 
 export interface DashboardMetric {

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Post } from "@/types";
 import { getSectorStyle } from "@/lib/sectors";
 
@@ -8,7 +9,6 @@ interface Props {
   compact?: boolean;
 }
 
-// Left border color by post type
 const BORDER_COLORS: Record<string, string> = {
   "Company spotlight": "#2d8c5e",
   "Industry analysis": "#c47d1a",
@@ -47,6 +47,20 @@ export default function PostCard({ post, featured = false, compact = false }: Pr
         >
           {post.title}
         </h3>
+
+        {/* Image — non-compact cards only, capped at 280px tall */}
+        {!compact && post.image && (
+          <div className="rounded overflow-hidden mb-3" style={{ maxWidth: 600 }}>
+            <Image
+              src={post.image}
+              alt={post.title}
+              width={800}
+              height={600}
+              className="w-full h-auto"
+              style={{ display: "block", maxHeight: 280, objectFit: "cover", objectPosition: "top" }}
+            />
+          </div>
+        )}
 
         {/* Excerpt — only on non-compact */}
         {!compact && post.excerpt && (

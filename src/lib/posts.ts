@@ -23,6 +23,7 @@ export function getAllPosts(): Post[] {
       readTime: data.readTime || "5 min read",
       type: data.type || "Industry analysis",
       sector: data.sector || "",
+      image: data.image || null,
     } as Post;
   });
 
@@ -48,5 +49,6 @@ export function getPostBySlug(slug: string): Post | null {
     sector: data.sector || "",
     content,
     sources: data.sources || [],
+    image: data.image || null,
   } as Post;
 }
