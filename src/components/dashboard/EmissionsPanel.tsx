@@ -134,7 +134,7 @@ export default function EmissionsPanel({ sources }: Props) {
             },
             y: {
               min: 45, max: 155,
-              ticks: { color: muted, font: { size: 11 }, stepSize: 25, callback: (v: any): string | void => v + "M" },
+              ticks: { color: muted, font: { size: 11 }, stepSize: 25, callback: (v: any) => v + "M" },
               grid: { color: grid },
               border: { color: grid },
               title: { display: true, text: "MMT CO₂e", color: muted, font: { size: 11 } },
