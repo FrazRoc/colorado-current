@@ -28,23 +28,20 @@ const dashboardData: DashboardData = {
   ],
 
   sectorCounts: [
-    { name: "Solar & Storage", count: 13 },
+    { name: "Solar & Storage", count: 15 },
     { name: "Grid Software", count: 11 },
     { name: "EV & Transportation", count: 6 },
+    { name: "Low-Carbon Materials", count: 5 },
     { name: "Geothermal", count: 4 },
-    { name: "Low-Carbon Materials", count: 4 },
-    { name: "Hydrogen", count: 3 },
-    { name: "Carbon Removal", count: 3 },
-    { name: "Home Electrification", count: 3 },
+    { name: "Carbon Removal", count: 4 },
     { name: "Agriculture Tech", count: 3 },
+    { name: "Home Electrification", count: 3 },
+    { name: "Hydrogen", count: 3 },
     { name: "Industrial Decarb", count: 2 },
     { name: "Research / Policy", count: 2 },
-    { name: "Community Solar", count: 2 },
     { name: "Methane/Emissions Monitoring", count: 2 },
     { name: "Circular Economy/Recycling", count: 2 },
     { name: "Fusion", count: 1 },
-    { name: "Carbon Capture/DAC", count: 1 },
-    { name: "Sustainable Fuels", count: 1 },
   ],
 
   recentFunding: [
