@@ -23,6 +23,11 @@ const SECTOR_COLORS: Record<string, string> = {
   "Carbon Removal": "#888780",
   "Fusion": "#A32D2D",
   "Research / Policy": "#444441",
+  "Low-Carbon Materials": "#7A5C3E",
+  "Agriculture Tech": "#6B8E23",
+  "Methane/Emissions Monitoring": "#C0392B",
+  "Circular Economy/Recycling": "#1F9E89",
+  "Aviation": "#2E6F95",
 };
 
 interface Props {
@@ -38,7 +43,6 @@ export default function MapPanel({ companies }: Props) {
         Company HQ locations
       </div>
       <CompanyMap companies={companies} />
-      {/* Legend */}
       <div className="flex flex-wrap gap-x-3 gap-y-1 mt-3">
         {sectors.map((sector) => (
           <div key={sector} className="flex items-center gap-1">

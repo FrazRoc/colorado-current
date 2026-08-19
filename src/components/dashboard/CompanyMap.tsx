@@ -18,6 +18,11 @@ const SECTOR_COLORS: Record<string, string> = {
   "Carbon Removal": "#888780",
   "Fusion": "#A32D2D",
   "Research / Policy": "#444441",
+  "Low-Carbon Materials": "#7A5C3E",
+  "Agriculture Tech": "#6B8E23",
+  "Methane/Emissions Monitoring": "#C0392B",
+  "Circular Economy/Recycling": "#1F9E89",
+  "Aviation": "#2E6F95",
 };
 
 export default function CompanyMap({ companies }: Props) {
@@ -31,7 +36,6 @@ export default function CompanyMap({ companies }: Props) {
     import("leaflet").then((L) => {
       if (!containerRef.current) return;
 
-      // If Leaflet already initialized this container, destroy it first
       const container = containerRef.current as any;
       if (container._leaflet_id) {
         container._leaflet_id = null;

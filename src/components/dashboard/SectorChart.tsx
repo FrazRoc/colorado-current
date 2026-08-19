@@ -21,6 +21,7 @@ const SECTOR_COLORS: Record<string, string> = {
   "Agriculture Tech": "#6B8E23",
   "Methane/Emissions Monitoring": "#C0392B",
   "Circular Economy/Recycling": "#1F9E89",
+  "Aviation": "#2E6F95",
 };
 
 const TOP_N = 6;
@@ -37,7 +38,6 @@ export default function SectorChart({ sectors, sources }: Props) {
         Companies by Industry
       </div>
 
-      {/* Top sectors — full bars */}
       <div className="flex flex-col gap-2.5 mb-4">
         {top.map((sector) => {
           const color = SECTOR_COLORS[sector.name] || "#888780";
@@ -61,7 +61,6 @@ export default function SectorChart({ sectors, sources }: Props) {
         })}
       </div>
 
-      {/* Remaining sectors — compact tag list */}
       {rest.length > 0 && (
         <div className="pt-3 border-t border-surface-border">
           <div className="text-2xs font-sans text-ink-faint uppercase tracking-widest mb-2">
