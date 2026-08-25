@@ -16,7 +16,12 @@ export type Sector =
   | "Energy Efficiency / Finance"
   | "Distributed Solar"
   | "Energy Storage"
-  | "Fusion";
+  | "Fusion"
+  | "Low-Carbon Materials"
+  | "Circular Economy/Recycling"
+  | "Agriculture Tech"
+  | "Aviation"
+  | "Methane/Emissions Monitoring";
 
 export type Stage =
   | "Pre-seed"
@@ -87,15 +92,6 @@ export interface SectorCount {
   count: number;
 }
 
-export interface FundingRound {
-  company: string;
-  amount: string;
-  type: string;
-  sector: string;
-  date: string;
-  isIpo?: boolean;
-}
-
 export interface LegislationItem {
   name: string;
   status: string;
@@ -111,22 +107,11 @@ export interface EmissionsData {
 export interface DashboardData {
   updatedAt: string;
   metrics: DashboardMetric[];
-  recentFunding: FundingRound[];
   legislation: LegislationItem[];
-  vppMw: number;
-  vppGoal: number;
-  heatPumpRebates: number;
   emissions?: EmissionsData;
   sources: {
-    trackedCompanies: DashboardSource[];
     ecosystemFunding: DashboardSource[];
-    openJobs: DashboardSource[];
-    renewableGeneration: DashboardSource[];
-    coal?: DashboardSource[];
-    vpp: DashboardSource[];
-    heatPumps: DashboardSource[];
     legislation: DashboardSource[];
-    recentFunding: DashboardSource[];
     emissions?: DashboardSource[];
   };
 }

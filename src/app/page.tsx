@@ -5,6 +5,7 @@ import EmissionsPanel from "@/components/dashboard/EmissionsPanel";
 import MapPanel from "@/components/dashboard/MapPanel";
 import SectorEmissionsPanel from "@/components/dashboard/SectorEmissionsPanel";
 import FundingTicker from "@/components/dashboard/FundingTicker";
+import SourceLinks from "@/components/dashboard/SourceLinks";
 import JobsMetric from "@/components/dashboard/JobsMetric";
 import PostCard from "@/components/blog/PostCard";
 import dashboardData from "@/data/dashboard";
@@ -21,7 +22,7 @@ export default async function HomePage() {
   const companies = await fetchCompanies();
   const sectorCounts = getSectorCounts(companies);
 
-  // metrics[0] = tracked companies (count is dynamic), metrics[1] = ecosystem funding, metrics[2] = coal
+  // metrics[0] = tracked companies (count is dynamic), metrics[1] = ecosystem funding
   const fundingMetric = metrics[1];
 
   return (
@@ -68,6 +69,7 @@ export default async function HomePage() {
             <div className="text-xs font-sans text-ink-muted">
               {fundingMetric.delta}
             </div>
+            <SourceLinks sources={sources.ecosystemFunding} />
           </div>
 
           {/* Open jobs — live from ATS APIs */}
@@ -75,7 +77,7 @@ export default async function HomePage() {
         </div>
 
         {/* Funding ticker */}
-        <FundingTicker />
+        <FundingTicker companies={companies} />
 
         {/* Row 2: Sector chart + Legislation */}
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] border-t border-surface-border border-l border-surface-border">

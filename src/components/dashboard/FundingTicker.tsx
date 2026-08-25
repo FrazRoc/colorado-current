@@ -1,8 +1,18 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
+import type { Company } from "@/types";
+import { getSectorColor } from "@/lib/sectors";
 
+interface Props {
+  companies: Company[];
+}
+
+// Deal-level history (amount/type/date per round) isn't in the Sheet — it
+// only tracks each company's current cumulative funding as free text, not
+// an itemized log of rounds. This list stays hand-curated; the sector dot
+// per deal below is the part that comes from the live Sheet.
 const deals = [
   { company: "Zero Homes", amount: "$16.8M", type: "Series A", date: "Feb 2026" },
   { company: "AtmosZero", amount: "$28.5M", type: "Series B", date: "Mar 2026" },
@@ -22,10 +32,16 @@ const deals = [
   { company: "ION Clean Energy", amount: "$45M", type: "Series A", date: "Apr 2024" },
 ];
 
-export default function FundingTicker() {
+export default function FundingTicker({ companies }: Props) {
   const router = useRouter();
   const trackRef = useRef<HTMLDivElement>(null);
   const items = [...deals, ...deals];
+
+  const sectorByCompany = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const c of companies) map.set(c.name, c.sector);
+    return map;
+  }, [companies]);
 
   function pause() {
     if (trackRef.current) trackRef.current.style.animationPlayState = "paused";
@@ -70,6 +86,16 @@ export default function FundingTicker() {
       >
         {items.map((deal, i) => (
           <span key={i} className="inline-flex items-center gap-1.5" style={{ paddingRight: 28 }}>
+            <div
+              style={{
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background: getSectorColor(sectorByCompany.get(deal.company) ?? ""),
+                flexShrink: 0,
+              }}
+              title={sectorByCompany.get(deal.company)}
+            />
             <button
               onClick={() => router.push(`/companies?company=${encodeURIComponent(deal.company)}`)}
               className="font-sans font-semibold text-ink hover:text-cc-green transition-colors cursor-pointer bg-transparent border-0 p-0"

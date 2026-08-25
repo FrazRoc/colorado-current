@@ -38,19 +38,53 @@ src/
     api/jobs/route.ts           — live ATS job count aggregator
     sitemap.ts, robots.ts       — auto-generated SEO files
   components/
-    dashboard/                  — MetricsRow, SectorChart, PolicyPanel,
-                                   EmissionsPanel, MapPanel, CompanyMap,
-                                   SectorEmissionsPanel, FundingTicker, JobsMetric
+    dashboard/                  — SectorChart, PolicyPanel, EmissionsPanel,
+                                   MapPanel, CompanyMap, SectorEmissionsPanel,
+                                   FundingTicker, JobsMetric, SourceLinks.
+                                   MetricsRow.tsx, StatPanel.tsx, and
+                                   HeatPumpPanel.tsx were removed Aug 2026 —
+                                   all three were dead (unimported), and had
+                                   silently orphaned two live features along
+                                   the way: MetricsRow used to render a
+                                   citation footer under the funding/coal
+                                   metrics (restored inline in page.tsx —
+                                   ecosystem funding's footer is back; the
+                                   coal metric itself was retired instead per
+                                   product decision, along with
+                                   sources.coal — EmissionsPanel's own
+                                   separately-hardcoded "Coal generation
+                                   24.7%" warning line is intentionally
+                                   unrelated and was kept), and
+                                   StatPanel/HeatPumpPanel rendered a VPP
+                                   progress + heat pump rebates panel that
+                                   hadn't appeared on the homepage in a while
+                                   — retired outright (vppMw/vppGoal/
+                                   heatPumpRebates and sources.vpp/heatPumps
+                                   removed from dashboard.ts and the
+                                   DashboardData type). Lesson: an orphaned
+                                   component can mean its DATA silently
+                                   stopped being cited/shown — check what a
+                                   "dead" component used to render before
+                                   deleting, not just whether it's imported.
+                                   FundingTicker.tsx owns its own hand-curated
+                                   `deals` array (amount/type/date per round —
+                                   the Sheet only has each company's current
+                                   cumulative funding as free text, not
+                                   itemized deal history, so this can't be
+                                   sheet-derived) but takes `companies` as a
+                                   prop to color each deal's dot via
+                                   getSectorColor(), so at least the sector
+                                   half is live instead of hand-typed.
     directory/CompanyTable.tsx  — filterable/sortable table, auto-expands via
                                    ?company= query param (used by map dots and
                                    funding ticker click-throughs)
     blog/PostCard.tsx           — blog card with optional image, colored left
                                    border by post type
     layout/Nav.tsx, Footer.tsx
-  data/dashboard.ts             — dashboard metrics, funding ticker deals,
-                                   legislation list (NOT company data or
-                                   sector counts — both are computed live
-                                   from Sheets, see below)
+  data/dashboard.ts             — dashboard metrics, legislation list (NOT
+                                   company data or sector counts — both are
+                                   computed live from Sheets, see below; also
+                                   NOT funding deals, see FundingTicker below)
   lib/
     sheets.ts                   — fetches + parses the Google Sheets CSV into
                                    Company[] objects (this is where new
@@ -87,7 +121,16 @@ src/
                                    in the same file — falls back to gray for
                                    anything in neither.
   content/posts/*.mdx           — blog post source files
-  types/index.ts                — Company, Post, DashboardData, etc.
+  types/index.ts                — Company, Post, DashboardData, etc. The
+                                   `Sector` union is meant to list every valid
+                                   sector value — it drifted stale (was
+                                   missing 5 of the live Sheet's 15 sectors as
+                                   of Aug 2026, silently harmless only because
+                                   `sheets.ts` casts through it rather than
+                                   validating). Fixed, but nothing enforces
+                                   it stays in sync — if `/companies` ever
+                                   shows an ungraceful sector, check this
+                                   union against the live Sheet first.
 
 public/images/                  — blog post images (screenshots of charts, etc.)
 ```
