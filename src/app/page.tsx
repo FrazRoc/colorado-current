@@ -1,5 +1,4 @@
 import Link from "next/link";
-import MetricsRow from "@/components/dashboard/MetricsRow";
 import SectorChart from "@/components/dashboard/SectorChart";
 import PolicyPanel from "@/components/dashboard/PolicyPanel";
 import EmissionsPanel from "@/components/dashboard/EmissionsPanel";
@@ -17,8 +16,11 @@ export default async function HomePage() {
   const featured = posts[0];
   const sidebar = posts.slice(1, 3);
   const lower = posts.slice(3, 6);
-  const { sources } = dashboardData;
+  const { sources, metrics } = dashboardData;
   const companies = await fetchCompanies();
+
+  // metrics[0] = tracked companies (count is dynamic), metrics[1] = ecosystem funding, metrics[2] = coal
+  const fundingMetric = metrics[1];
 
   return (
     <>
@@ -40,7 +42,7 @@ export default async function HomePage() {
 
         {/* Row 1: companies, funding, open jobs */}
         <div className="grid grid-cols-2 md:grid-cols-3 border-t-[3px] border-ink border-l border-surface-border">
-          {/* Companies — dynamic */}
+          {/* Companies — dynamic count from Sheets */}
           <div className="px-4 md:px-5 py-4 md:py-5 border-r border-surface-border border-b md:border-b-0 flex flex-col">
             <div className="text-3xl md:text-4xl font-serif font-extrabold text-ink leading-none tracking-tight">
               {companies.length}
@@ -49,20 +51,20 @@ export default async function HomePage() {
               Tracked companies
             </div>
             <div className="text-xs font-sans font-semibold text-cc-green">
-              Across 11 sectors
+              Across {dashboardData.sectorCounts.length} sectors
             </div>
           </div>
 
-          {/* Ecosystem funding */}
+          {/* Ecosystem funding — sourced from dashboard.ts, single source of truth */}
           <div className="px-4 md:px-5 py-4 md:py-5 border-r border-surface-border border-b md:border-b-0 flex flex-col">
             <div className="text-3xl md:text-4xl font-serif font-extrabold text-ink leading-none tracking-tight">
-              $4.5B
+              {fundingMetric.value}
             </div>
             <div className="text-2xs font-sans text-ink-muted uppercase tracking-widest mt-1.5 mb-1">
-              Ecosystem funding
+              {fundingMetric.label}
             </div>
             <div className="text-xs font-sans text-ink-muted">
-              24 companies with disclosed funding
+              {fundingMetric.delta}
             </div>
           </div>
 

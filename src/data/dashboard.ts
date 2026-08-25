@@ -14,9 +14,9 @@ const dashboardData: DashboardData = {
       deltaPositive: true,
     },
     {
-      value: "$4.5B",
+      value: "$6.5B",
       label: "Ecosystem funding",
-      delta: "24 companies with disclosed funding",
+      delta: "53 companies with disclosed funding",
       deltaPositive: false,
     },
     {
@@ -30,19 +30,20 @@ const dashboardData: DashboardData = {
   sectorCounts: [
     { name: "Solar & Storage", count: 19 },
     { name: "Grid Software", count: 16 },
-    { name: "Low-Carbon Materials", count: 9 },
     { name: "EV & Transportation", count: 8 },
-    { name: "Research / Policy", count: 7 },
-    { name: "Carbon Removal", count: 6 },
+    { name: "Low-Carbon Materials", count: 8 },
     { name: "Geothermal", count: 6 },
+    { name: "Research / Policy", count: 6 },
     { name: "Home Electrification", count: 5 },
+    { name: "Carbon Removal", count: 4 },
+    { name: "Circular Economy/Recycling", count: 3 },
     { name: "Hydrogen", count: 3 },
     { name: "Agriculture Tech", count: 3 },
-    { name: "Aviation", count: 3 },
     { name: "Fusion", count: 3 },
-    { name: "Circular Economy/Recycling", count: 3 },
+    { name: "Aviation", count: 3 },
     { name: "Industrial Decarb", count: 2 },
     { name: "Methane/Emissions Monitoring", count: 2 },
+    { name: "Carbon Capture/DAC", count: 2 },
   ],
 
   recentFunding: [

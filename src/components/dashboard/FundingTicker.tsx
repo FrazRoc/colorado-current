@@ -7,14 +7,19 @@ const deals = [
   { company: "Zero Homes", amount: "$16.8M", type: "Series A", date: "Feb 2026" },
   { company: "AtmosZero", amount: "$28.5M", type: "Series B", date: "Mar 2026" },
   { company: "Fervo Energy", amount: "FRVO ↗", type: "IPO", date: "May 2026", isIpo: true },
+  { company: "Jetson Home", amount: "$50M", type: "Series A", date: "Jan 2026" },
   { company: "Outrider", amount: "$62M", type: "Series D", date: "Oct 2024" },
   { company: "Koloma", amount: "$50M", type: "Series B ext", date: "Oct 2024" },
   { company: "Pivot Energy", amount: "$450M", type: "Project finance", date: "Nov 2024" },
   { company: "Xcimer Energy", amount: "$100M", type: "Series B", date: "2024" },
+  { company: "Forge Nano", amount: "$40M", type: "Growth", date: "Apr 2025" },
+  { company: "LongPath Technologies", amount: "$162.4M", type: "DOE loan", date: "Oct 2024" },
   { company: "Steelhead Composites", amount: "$57.5M", type: "Series B", date: "2024" },
   { company: "Emporia", amount: "$16M", type: "Strategic", date: "2025" },
   { company: "Lightship", amount: "$81M", type: "Series B", date: "2023" },
-  { company: "Crusoe Energy Systems", amount: "$686M", type: "Series D", date: "2023" },
+  { company: "Crusoe Energy Systems", amount: "$600M", type: "Series D", date: "2023" },
+  { company: "King Energy", amount: "$10M", type: "Seed", date: "Oct 2024" },
+  { company: "ION Clean Energy", amount: "$45M", type: "Series A", date: "Apr 2024" },
 ];
 
 export default function FundingTicker() {
