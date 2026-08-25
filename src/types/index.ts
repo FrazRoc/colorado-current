@@ -111,7 +111,6 @@ export interface EmissionsData {
 export interface DashboardData {
   updatedAt: string;
   metrics: DashboardMetric[];
-  sectorCounts: SectorCount[];
   recentFunding: FundingRound[];
   legislation: LegislationItem[];
   vppMw: number;

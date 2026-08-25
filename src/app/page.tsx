@@ -10,6 +10,7 @@ import PostCard from "@/components/blog/PostCard";
 import dashboardData from "@/data/dashboard";
 import { getAllPosts } from "@/lib/posts";
 import { fetchCompanies } from "@/lib/sheets";
+import { getSectorCounts } from "@/lib/sectors";
 
 export default async function HomePage() {
   const posts = getAllPosts().slice(0, 5);
@@ -18,6 +19,7 @@ export default async function HomePage() {
   const lower = posts.slice(3, 6);
   const { sources, metrics } = dashboardData;
   const companies = await fetchCompanies();
+  const sectorCounts = getSectorCounts(companies);
 
   // metrics[0] = tracked companies (count is dynamic), metrics[1] = ecosystem funding, metrics[2] = coal
   const fundingMetric = metrics[1];
@@ -51,7 +53,7 @@ export default async function HomePage() {
               Tracked companies
             </div>
             <div className="text-xs font-sans font-semibold text-cc-green">
-              Across {dashboardData.sectorCounts.length} sectors
+              Across {sectorCounts.length} sectors
             </div>
           </div>
 
@@ -77,7 +79,7 @@ export default async function HomePage() {
 
         {/* Row 2: Sector chart + Legislation */}
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] border-t border-surface-border border-l border-surface-border">
-          <SectorChart sectors={dashboardData.sectorCounts} sources={[]} />
+          <SectorChart sectors={sectorCounts} sources={[]} />
           <PolicyPanel legislation={dashboardData.legislation} sources={sources.legislation} />
         </div>
 

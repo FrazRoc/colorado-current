@@ -2,28 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import type { Company } from "@/types";
+import { getSectorColor } from "@/lib/sectors";
 
 interface Props {
   companies: Company[];
 }
-
-const SECTOR_COLORS: Record<string, string> = {
-  "Solar & Storage": "#BA7517",
-  "Grid Software": "#185FA5",
-  "Geothermal": "#0F6E56",
-  "Home Electrification": "#3B6D11",
-  "Hydrogen": "#534AB7",
-  "Industrial Decarb": "#993C1D",
-  "EV & Transportation": "#993556",
-  "Carbon Removal": "#888780",
-  "Fusion": "#A32D2D",
-  "Research / Policy": "#444441",
-  "Low-Carbon Materials": "#7A5C3E",
-  "Agriculture Tech": "#6B8E23",
-  "Methane/Emissions Monitoring": "#C0392B",
-  "Circular Economy/Recycling": "#1F9E89",
-  "Aviation": "#2E6F95",
-};
 
 export default function CompanyMap({ companies }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,7 +41,7 @@ export default function CompanyMap({ companies }: Props) {
       companies.forEach((company) => {
         if (!company.lat || !company.lng) return;
 
-        const color = SECTOR_COLORS[company.sector] || "#888780";
+        const color = getSectorColor(company.sector);
 
         const icon = L.divIcon({
           className: "",

@@ -27,25 +27,6 @@ const dashboardData: DashboardData = {
     },
   ],
 
-  sectorCounts: [
-    { name: "Solar & Storage", count: 19 },
-    { name: "Grid Software", count: 16 },
-    { name: "EV & Transportation", count: 8 },
-    { name: "Low-Carbon Materials", count: 8 },
-    { name: "Geothermal", count: 6 },
-    { name: "Research / Policy", count: 6 },
-    { name: "Home Electrification", count: 5 },
-    { name: "Carbon Removal", count: 4 },
-    { name: "Circular Economy/Recycling", count: 3 },
-    { name: "Hydrogen", count: 3 },
-    { name: "Agriculture Tech", count: 3 },
-    { name: "Fusion", count: 3 },
-    { name: "Aviation", count: 3 },
-    { name: "Industrial Decarb", count: 2 },
-    { name: "Methane/Emissions Monitoring", count: 2 },
-    { name: "Carbon Capture/DAC", count: 2 },
-  ],
-
   recentFunding: [
     {
       company: "Zero Homes",
