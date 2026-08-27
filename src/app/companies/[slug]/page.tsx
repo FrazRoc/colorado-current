@@ -63,6 +63,14 @@ export default async function CompanyPage({ params }: Props) {
     address: company.hq ? { "@type": "PostalAddress", addressLocality: company.hq } : undefined,
     industry: company.sector,
     foundingDate: company.founded || undefined,
+    sameAs: [
+      company.linkedin_url,
+      company.twitter_url,
+      company.facebook_url,
+      company.instagram_url,
+      company.youtube_url,
+      company.crunchbase_url,
+    ].filter(Boolean),
   };
 
   return (
@@ -182,23 +190,38 @@ export default async function CompanyPage({ params }: Props) {
           <div className="border border-surface-border rounded px-4 py-4">
             <p className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-3">Links</p>
             <ul className="flex flex-col">
-              {company.website && (
-                <li className="border-b border-surface-divider">
-                  <a href={company.website} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between py-2.5 text-xs font-sans font-semibold text-ink hover:text-cc-green">
-                    Website <span>→</span>
-                  </a>
-                </li>
-              )}
-              {company.jobs_url && (
-                <li>
-                  <a href={company.jobs_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between py-2.5 text-xs font-sans font-semibold text-ink hover:text-cc-green">
-                    Open jobs <span>→</span>
-                  </a>
-                </li>
-              )}
-              {!company.website && !company.jobs_url && (
-                <li className="text-xs font-sans text-ink-faint py-1">No links yet.</li>
-              )}
+              {[
+                ["Website", company.website],
+                ["Open jobs", company.jobs_url],
+                ["LinkedIn", company.linkedin_url],
+                ["X / Twitter", company.twitter_url],
+                ["Facebook", company.facebook_url],
+                ["Instagram", company.instagram_url],
+                ["YouTube", company.youtube_url],
+                ["Crunchbase", company.crunchbase_url],
+                ["Pitchbook", company.pitchbook_url],
+                ["Built In", company.builtin_url],
+              ]
+                .filter(([, url]) => Boolean(url))
+                .map(([label, url], i, arr) => (
+                  <li key={label} className={i < arr.length - 1 ? "border-b border-surface-divider" : ""}>
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between py-2.5 text-xs font-sans font-semibold text-ink hover:text-cc-green">
+                      {label} <span>→</span>
+                    </a>
+                  </li>
+                ))}
+              {!company.website &&
+                !company.jobs_url &&
+                !company.linkedin_url &&
+                !company.twitter_url &&
+                !company.facebook_url &&
+                !company.instagram_url &&
+                !company.youtube_url &&
+                !company.crunchbase_url &&
+                !company.pitchbook_url &&
+                !company.builtin_url && (
+                  <li className="text-xs font-sans text-ink-faint py-1">No links yet.</li>
+                )}
             </ul>
           </div>
 

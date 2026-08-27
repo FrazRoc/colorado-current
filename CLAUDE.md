@@ -154,14 +154,26 @@ public/images/                  — blog post images (screenshots of charts, etc
   anyone visiting the site), there's no benefit to marking it Sensitive.
 - Columns: `name, hq, sector, stage, funding, what_they_do, interesting_angle,
   website, founded, b_corp, target_customer, last_updated, sources, notes,
-  lat, lng, jobs_url`
+  lat, lng, jobs_url, linkedin_url, twitter_url, facebook_url, instagram_url,
+  youtube_url, crunchbase_url, pitchbook_url, builtin_url` (the social/data-
+  provider columns are optional — added Aug 2026 for the company profile
+  pages' Links panel, and rendered only when a given company's cell is
+  non-empty)
 - `sheets.ts` parses headers case-insensitively and lowercases them — any new
   column needs a matching field added to both the `Company` type
   (`src/types/index.ts`) and the parse logic in `sheets.ts`
-- I (Claude, in the web chat) cannot edit the Sheet directly — the workflow so
-  far has been: research a company → build a spreadsheet row → export as
-  xlsx → Evan pastes it into the live Sheet manually. If Claude Code has
-  Sheets API / MCP access this could become more direct — check with Evan.
+- Claude Code has the `mcp__claude_ai_Google_Drive__*` tools connected, which
+  can find and read the live Sheet directly (confirmed Aug 2026 —
+  `search_files` + `read_file_content`/`download_file_content` return its
+  actual CSV content, case: `title contains 'Colorado Current' and mimeType =
+  'application/vnd.google-apps.spreadsheet'` finds it). That's Drive-API
+  file-level access only, though — there is no Sheets-API cell/row/column
+  write call (`values.update`/`batchUpdate`) among these tools, only whole-
+  file operations (create/copy/rename/move/share/trash). So new rows or
+  columns still can't be added in place; the workflow stays: research a
+  company → build a spreadsheet row → Evan pastes it into the live Sheet
+  manually — but Claude Code no longer needs Evan to paste the sheet's
+  contents back for reference, since it can just read it directly now.
 - Dashboard sector counts (`SectorChart` on the homepage) are **dynamic** —
   `page.tsx` calls `getSectorCounts(companies)` (`src/lib/sectors.ts`), which
   tallies `sector` values across the live fetched company list on every

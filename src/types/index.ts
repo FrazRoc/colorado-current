@@ -49,6 +49,14 @@ export interface Company {
   target_customer?: string;
   last_updated?: string;
   sources?: string;
+  linkedin_url?: string;
+  twitter_url?: string;
+  facebook_url?: string;
+  instagram_url?: string;
+  youtube_url?: string;
+  crunchbase_url?: string;
+  pitchbook_url?: string;
+  builtin_url?: string;
   notes?: string;
   jobs_url?: string;
   lat?: number;
