@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useRef } from "react";
 import type { Company } from "@/types";
 import { getSectorColor } from "@/lib/sectors";
+import { slugify } from "@/lib/companies";
 
 interface Props {
   companies: Company[];
@@ -97,7 +98,7 @@ export default function FundingTicker({ companies }: Props) {
               title={sectorByCompany.get(deal.company)}
             />
             <button
-              onClick={() => router.push(`/companies?company=${encodeURIComponent(deal.company)}`)}
+              onClick={() => router.push(`/companies/${slugify(deal.company)}`)}
               className="font-sans font-semibold text-ink hover:text-cc-green transition-colors cursor-pointer bg-transparent border-0 p-0"
               style={{ fontSize: 12 }}
             >

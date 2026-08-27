@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useMemo } from "react";
+import Link from "next/link";
 import type { Company } from "@/types";
 import { getSectorStyle } from "@/lib/sectors";
+import { slugify } from "@/lib/companies";
 
 interface Props {
   companies: Company[];
@@ -23,30 +24,12 @@ function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
 }
 
 export default function CompanyTable({ companies }: Props) {
-  const searchParams = useSearchParams();
   const [sectorFilter, setSectorFilter] = useState(ALL);
   const [stageFilter, setStageFilter] = useState(ALL);
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
-  const expandedRef = useRef<HTMLTableRowElement | HTMLDivElement | null>(null);
-
-  // Auto-expand company from query param (e.g. ?company=Uplight from map click)
-  useEffect(() => {
-    const companyParam = searchParams.get("company");
-    if (companyParam) {
-      setExpanded(companyParam);
-      // Clear filters so the company is visible
-      setSectorFilter(ALL);
-      setStageFilter(ALL);
-      setSearch("");
-      // Scroll to expanded row after render
-      setTimeout(() => {
-        expandedRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 150);
-    }
-  }, [searchParams]);
 
   function handleSort(key: SortKey) {
     if (sortKey === key) {
@@ -136,13 +119,18 @@ export default function CompanyTable({ companies }: Props) {
             return (
               <div
                 key={company.name}
-                ref={isExpanded ? (el) => { expandedRef.current = el; } : null}
                 className="border border-surface-border rounded overflow-hidden"
                 onClick={() => setExpanded(isExpanded ? null : company.name)}
               >
                 <div className="px-4 py-3 bg-surface cursor-pointer">
                   <div className="flex items-start justify-between gap-2 mb-1.5">
-                    <span className="text-sm font-sans font-semibold text-ink">{company.name}</span>
+                    <Link
+                      href={`/companies/${slugify(company.name)}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-sm font-sans font-semibold text-ink hover:text-cc-green"
+                    >
+                      {company.name}
+                    </Link>
                     <span
                       className="text-tag font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm flex-shrink-0"
                       style={{ background: style.bg, color: style.text }}
@@ -182,6 +170,7 @@ export default function CompanyTable({ companies }: Props) {
                       {company.sources && company.sources.split(",").map((s, i) => (
                         <a key={i} href={s.trim()} target="_blank" rel="noopener noreferrer" className="text-2xs text-ink-faint hover:text-cc-green">[{i + 1}]</a>
                       ))}
+                      <Link href={`/companies/${slugify(company.name)}`} className="text-xs text-cc-green hover:underline font-semibold ml-auto">Full profile →</Link>
                     </div>
                   </div>
                 )}
@@ -223,11 +212,18 @@ export default function CompanyTable({ companies }: Props) {
                       <table className="w-full border-collapse">
                         <tbody>
                           <tr
-                            ref={isExpanded ? (el) => { expandedRef.current = el; } : null}
                             className="border-b border-surface-divider hover:bg-surface-dash cursor-pointer transition-colors"
                             onClick={() => setExpanded(isExpanded ? null : company.name)}
                           >
-                            <td className="px-4 py-3 font-semibold text-ink w-1/5">{company.name}</td>
+                            <td className="px-4 py-3 font-semibold text-ink w-1/5">
+                              <Link
+                                href={`/companies/${slugify(company.name)}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="hover:text-cc-green"
+                              >
+                                {company.name}
+                              </Link>
+                            </td>
                             <td className="px-4 py-3 w-1/5">
                               <span className="text-tag font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm" style={{ background: style.bg, color: style.text }}>
                                 {company.sector}
@@ -274,6 +270,7 @@ export default function CompanyTable({ companies }: Props) {
                                         ))}
                                       </span>
                                     )}
+                                    <Link href={`/companies/${slugify(company.name)}`} className="text-xs text-cc-green hover:underline font-semibold ml-auto">Full profile →</Link>
                                   </div>
                                 </div>
                               </td>

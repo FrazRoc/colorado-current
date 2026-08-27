@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { Company } from "@/types";
 import { getSectorColor } from "@/lib/sectors";
+import { slugify } from "@/lib/companies";
 
 interface Props {
   companies: Company[];
@@ -68,7 +69,7 @@ export default function CompanyMap({ companies }: Props) {
         });
 
         marker.on("click", () => {
-          window.location.href = `/companies?company=${encodeURIComponent(company.name)}`;
+          window.location.href = `/companies/${slugify(company.name)}`;
         });
 
         marker.addTo(map);
