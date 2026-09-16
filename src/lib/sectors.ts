@@ -31,6 +31,7 @@ export const SECTOR_COLORS: Record<string, string> = {
   "Aviation": "#2E6F95",
   "Marine/Wave Energy": "#0E7490",
   "Utility / Renewable Power": "#9C7A2E",
+  "Critical Minerals": "#8B5A2B",
 };
 
 const SECTOR_COLOR_FALLBACK = "#888780";

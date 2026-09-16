@@ -22,7 +22,8 @@ export type Sector =
   | "Agriculture Tech"
   | "Aviation"
   | "Methane/Emissions Monitoring"
-  | "Marine/Wave Energy";
+  | "Marine/Wave Energy"
+  | "Critical Minerals";
 
 export type Stage =
   | "Pre-seed"

@@ -8,6 +8,13 @@
       "when": 1789598123482,
       "tag": "0000_strange_lorna_dane",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789599524156,
+      "tag": "0001_sudden_skreet",
+      "breakpoints": true
     }
   ]
 }

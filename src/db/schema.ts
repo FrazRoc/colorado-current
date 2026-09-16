@@ -1,4 +1,4 @@
-import { pgTable, serial, text, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, doublePrecision, timestamp } from "drizzle-orm/pg-core";
 
 export const companies = pgTable("companies", {
   id: serial("id").primaryKey(),
@@ -28,4 +28,17 @@ export const companies = pgTable("companies", {
   builtinUrl: text("builtin_url"),
   lat: doublePrecision("lat"),
   lng: doublePrecision("lng"),
+});
+
+// Companies deliberately excluded from the directory during research passes
+// (out of scope — general industrial/manufacturing companies swept in by a
+// broad "climate, energy & critical minerals" source list, not actual
+// clean-energy/climate-tech companies) — recorded so future research doesn't
+// re-litigate the same company from scratch.
+export const rejectedCompanies = pgTable("rejected_companies", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  reason: text("reason").notNull(),
+  sourceUrl: text("source_url"),
+  rejectedAt: timestamp("rejected_at").defaultNow().notNull(),
 });

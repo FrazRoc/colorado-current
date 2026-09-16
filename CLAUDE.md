@@ -198,6 +198,15 @@ public/images/                  — blog post images (screenshots of charts, etc
   via `getSectorColor()`. `src/data/dashboard.ts` (hand-maintained metrics/
   legislation) and `src/app/api/jobs/route.ts` (independent hardcoded
   `ATS_SOURCES` list) were never sourced from the Sheet and remain untouched.
+- A second table, `rejected_companies` (`src/db/schema.ts`), records companies
+  that came up during research but were deliberately excluded as out of scope
+  (name, reason, source URL, timestamp) — added Sep 2026 after repeatedly
+  re-litigating the same "is this actually a clean energy company or just an
+  industrial company that touches energy/materials" judgment call on
+  companies pulled from broad third-party "climate & critical minerals"
+  startup lists. Check this table before researching a new company Evan
+  hasn't explicitly pre-approved, to avoid redoing a scope decision already
+  made.
 - Sector *colors* (`SECTOR_COLORS` in `src/lib/sectors.ts`) deliberately
   stayed a hardcoded map rather than moving into the DB — `getSectorColor()`
   is imported directly into client components (`CompanyMap.tsx`,
