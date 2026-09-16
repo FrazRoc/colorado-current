@@ -184,9 +184,12 @@ public/images/                  — blog post images (screenshots of charts, etc
   any new column also needs a matching field added to the `Company` type
   (`src/types/index.ts`) and to the `toCompany()`/insert mapping in
   `src/lib/companies.ts`.
-- `scripts/migrate-from-sheets.ts` is the one-time backfill script that
-  populated the table from the live Sheet (98 companies at migration time,
-  Sep 2026) — kept for reference, not part of the app's runtime path.
+- The one-time backfill script that populated the table from the live Sheet
+  (98 companies, Sep 2026) has been removed now that the migration is
+  confirmed live in production — the CSV fetch logic it depended on
+  (`src/lib/sheets.ts`) is gone too. Both are recoverable from git history
+  (see the "Migrate company directory from Google Sheets to Neon Postgres"
+  commit) if a re-import from a spreadsheet is ever needed again.
 - **Not migrated / explicitly out of scope**: `FundingTicker.tsx` still owns
   its own hand-curated `deals` array (amount/type/date per funding round —
   the old Sheet only ever had each company's current cumulative funding as
