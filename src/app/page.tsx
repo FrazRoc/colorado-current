@@ -10,7 +10,7 @@ import JobsMetric from "@/components/dashboard/JobsMetric";
 import PostCard from "@/components/blog/PostCard";
 import dashboardData from "@/data/dashboard";
 import { getAllPosts } from "@/lib/posts";
-import { fetchCompanies } from "@/lib/sheets";
+import { getCompanies } from "@/lib/companies";
 import { getSectorCounts } from "@/lib/sectors";
 
 export default async function HomePage() {
@@ -19,7 +19,7 @@ export default async function HomePage() {
   const sidebar = posts.slice(1, 3);
   const lower = posts.slice(3, 6);
   const { sources, metrics } = dashboardData;
-  const companies = await fetchCompanies();
+  const companies = await getCompanies();
   const sectorCounts = getSectorCounts(companies);
 
   // metrics[0] = tracked companies (count is dynamic), metrics[1] = ecosystem funding

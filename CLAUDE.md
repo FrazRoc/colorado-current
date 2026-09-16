@@ -18,8 +18,10 @@ The site has two halves:
 ## Tech stack
 
 - Next.js 16 (App Router), Tailwind CSS v4, MDX, Vercel hosting
-- Data layer: a public Google Sheet (published as CSV) is the live source of
-  truth for the company directory — fetched server-side, not stored in the repo
+- Data layer: the company directory lives in Neon Postgres (provisioned via the
+  Vercel Marketplace), queried with Drizzle ORM (`drizzle-orm` +
+  `@neondatabase/serverless`, `neon-http` driver). Migrated off a Google Sheets
+  CSV in Sep 2026 — see "Company directory data" below.
 - Charts: Chart.js (loaded dynamically client-side, `"use client"` components)
 - Map: Leaflet with CartoDB light tiles
 - MDX rendering: `next-mdx-remote/rsc`
@@ -86,10 +88,12 @@ src/
                                    computed live from Sheets, see below; also
                                    NOT funding deals, see FundingTicker below)
   lib/
-    sheets.ts                   — fetches + parses the Google Sheets CSV into
-                                   Company[] objects (this is where new
-                                   spreadsheet columns need to be added if the
-                                   sheet schema changes)
+    companies.ts                 — queries the `companies` table via Drizzle
+                                   (getCompanies, getCompanyBySlug,
+                                   getRelatedCompanies) and maps rows to the
+                                   Company type; also owns slugify() (this is
+                                   where new DB columns need corresponding
+                                   field mapping added if the schema changes)
     posts.ts                    — reads MDX frontmatter + content from
                                    src/content/posts/
     sectors.ts                  — SINGLE SOURCE OF TRUTH for sector color:
@@ -135,45 +139,68 @@ src/
 public/images/                  — blog post images (screenshots of charts, etc.)
 ```
 
-## The Google Sheet (company directory)
+## Company directory data (Neon Postgres)
 
-- Sheet ID: `1CQnsYyfnOMImK-3F5U03xGbNX8baoT8eUCw0rwdFROw`
-- Published-to-web CSV URL lives in `NEXT_PUBLIC_SHEETS_CSV_URL` env var
-  (set in `.env.local` locally and in Vercel's dashboard for production)
-- **New-machine setup**: `.env.local` is gitignored, so a fresh clone has no
-  value for this. Run `vercel link` then `vercel env pull .env.local`. If
-  that pull comes back without `NEXT_PUBLIC_SHEETS_CSV_URL`, it's because the
-  var was only added for Production/Preview, not Development — `vercel env
-  ls` will confirm which environments it's set for. If it shows type
-  "Sensitive" for Production/Preview, note that Sensitive-type values are
-  write-only in Vercel (CLI and dashboard both refuse to show them once
-  saved) — `vercel env add NEXT_PUBLIC_SHEETS_CSV_URL development` needs the
-  actual URL re-supplied, which you get from the Sheet itself (File → Share →
-  Publish to web — reopening it shows the existing published CSV link, no
-  need to republish). Since this var is `NEXT_PUBLIC_*` anyway (visible to
-  anyone visiting the site), there's no benefit to marking it Sensitive.
-- Columns: `name, hq, sector, stage, funding, what_they_do, interesting_angle,
-  website, founded, b_corp, target_customer, last_updated, sources, notes,
-  lat, lng, jobs_url, linkedin_url, twitter_url, facebook_url, instagram_url,
-  youtube_url, crunchbase_url, pitchbook_url, builtin_url` (the social/data-
-  provider columns are optional — added Aug 2026 for the company profile
-  pages' Links panel, and rendered only when a given company's cell is
-  non-empty)
-- `sheets.ts` parses headers case-insensitively and lowercases them — any new
-  column needs a matching field added to both the `Company` type
-  (`src/types/index.ts`) and the parse logic in `sheets.ts`
-- Claude Code has the `mcp__claude_ai_Google_Drive__*` tools connected, which
-  can find and read the live Sheet directly (confirmed Aug 2026 —
-  `search_files` + `read_file_content`/`download_file_content` return its
-  actual CSV content, case: `title contains 'Colorado Current' and mimeType =
-  'application/vnd.google-apps.spreadsheet'` finds it). That's Drive-API
-  file-level access only, though — there is no Sheets-API cell/row/column
-  write call (`values.update`/`batchUpdate`) among these tools, only whole-
-  file operations (create/copy/rename/move/share/trash). So new rows or
-  columns still can't be added in place; the workflow stays: research a
-  company → build a spreadsheet row → Evan pastes it into the live Sheet
-  manually — but Claude Code no longer needs Evan to paste the sheet's
-  contents back for reference, since it can just read it directly now.
+- Migrated off a Google Sheets CSV in Sep 2026. The Drive MCP tools Claude
+  Code had connected (`mcp__claude_ai_Google_Drive__*`) only support
+  whole-file operations (create/copy/rename/move/share/trash) — there is no
+  Sheets-API cell/row write call (`values.update`/`batchUpdate`), so Claude
+  Code could read the Sheet directly but never edit it in place. Rather than
+  set up a separate Sheets OAuth connector just to unblock row edits, Evan
+  moved the directory to a real database, which also gives the site actual
+  relational tables to grow into instead of a flat CSV.
+- Single `companies` table, schema defined in `src/db/schema.ts` via Drizzle
+  (`pgTable`). Columns mirror the old Sheet columns 1:1 (see
+  `src/lib/companies.ts`'s `toCompany()` mapper for the exact field mapping),
+  plus a stored `slug` column (unique, computed once at insert time from
+  `slugify(name)` — the profile page route no longer re-derives the slug from
+  `name` on every request the way the old in-memory `getCompanyBySlug` did).
+- DB client: `src/db/index.ts` exports `getDb()`, a lazily-initialized
+  Drizzle client over `@neondatabase/serverless`'s `neon-http` driver. It's
+  lazy (not a top-level `neon()` call) so `next build` doesn't crash before
+  `DATABASE_URL` exists, and it's a plain function (not a `Proxy` wrapper)
+  since Proxies break library introspection in some contexts.
+- Query layer: `src/lib/companies.ts` — `getCompanies()`, `getCompanyBySlug(slug)`,
+  `getRelatedCompanies(company, limit)` — all return/consume the same `Company`
+  type from `src/types/index.ts` as before, so no consumer-side type changes
+  were needed. `slugify()` also lives here and is still used at render time
+  for building `/companies/[slug]` links throughout the app (CompanyTable,
+  CompanyMap, FundingTicker, sitemap) — it stays consistent with the stored
+  `slug` column because the backfill script used the same function.
+- **Editing data going forward**: no admin UI — ask Claude Code to add/update
+  a company and it writes directly via a script against the DB (Drizzle +
+  the Neon serverless driver), the same conversational flow as the old
+  "paste this row into the Sheet" workflow, except it actually executes.
+- Env var: `DATABASE_URL` (plus several other `PG*`/`POSTGRES_*`/`NEON_*` vars),
+  auto-provisioned into Vercel's Production/Preview/Development environments
+  by the Neon Marketplace integration. **New-machine setup**: `vercel link`
+  then `vercel env pull .env.local`. Drizzle Kit and any one-off script run
+  via `tsx` do **not** auto-load `.env.local` (only Next.js does) — run them
+  as `npx dotenv -e .env.local -- npx drizzle-kit <cmd>` /
+  `npx dotenv -e .env.local -- npx tsx <script>`.
+- Schema changes: edit `src/db/schema.ts`, then
+  `npx dotenv -e .env.local -- npx drizzle-kit generate` (writes a migration
+  file under `drizzle/`) and `... drizzle-kit push` (applies it to Neon) —
+  any new column also needs a matching field added to the `Company` type
+  (`src/types/index.ts`) and to the `toCompany()`/insert mapping in
+  `src/lib/companies.ts`.
+- `scripts/migrate-from-sheets.ts` is the one-time backfill script that
+  populated the table from the live Sheet (98 companies at migration time,
+  Sep 2026) — kept for reference, not part of the app's runtime path.
+- **Not migrated / explicitly out of scope**: `FundingTicker.tsx` still owns
+  its own hand-curated `deals` array (amount/type/date per funding round —
+  the old Sheet only ever had each company's current cumulative funding as
+  free text, not itemized deal history, and that didn't change with the DB
+  move) — it still takes `companies` as a prop only to color each deal's dot
+  via `getSectorColor()`. `src/data/dashboard.ts` (hand-maintained metrics/
+  legislation) and `src/app/api/jobs/route.ts` (independent hardcoded
+  `ATS_SOURCES` list) were never sourced from the Sheet and remain untouched.
+- Sector *colors* (`SECTOR_COLORS` in `src/lib/sectors.ts`) deliberately
+  stayed a hardcoded map rather than moving into the DB — `getSectorColor()`
+  is imported directly into client components (`CompanyMap.tsx`,
+  `SectorChart.tsx`) for synchronous lookups, and DB-backed colors would have
+  forced those into async/prop-drilled fetching for no real benefit. Only
+  `company.sector` (the string value) comes from the DB now, same as before.
 - Dashboard sector counts (`SectorChart` on the homepage) are **dynamic** —
   `page.tsx` calls `getSectorCounts(companies)` (`src/lib/sectors.ts`), which
   tallies `sector` values across the live fetched company list on every
@@ -181,7 +208,7 @@ public/images/                  — blog post images (screenshots of charts, etc
   live in `dashboard.ts` and had to be updated by hand after every directory
   change — that field was removed from both `dashboard.ts` and the
   `DashboardData` type since it's fully superseded now). `/companies` and the
-  map render live from the Sheet the same way.
+  map render live from the DB the same way.
 
 ## Writing style guide (STRICT — read before drafting any blog content)
 
@@ -283,5 +310,5 @@ the voice and strip out the things that make it sound like Evan.
   upload the current version of X" round-trips
 - Run `git status`/`diff`/`commit`/`push` directly instead of generating
   files for manual copy-paste
-- Potentially interact with the Google Sheet directly if Sheets API/MCP
-  access is set up — ask Evan if this is available before assuming it isn't
+- Write directly to the company directory (Neon Postgres) via a script run
+  against the DB — see "Company directory data" above

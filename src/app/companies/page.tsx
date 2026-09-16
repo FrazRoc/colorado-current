@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { fetchCompanies } from "@/lib/sheets";
+import { getCompanies } from "@/lib/companies";
 import CompanyTable from "@/components/directory/CompanyTable";
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function CompaniesPage() {
-  const companies = await fetchCompanies();
+  const companies = await getCompanies();
 
   return (
     <div className="px-8 py-10">
@@ -24,7 +24,7 @@ export default async function CompaniesPage() {
         </p>
         {companies.length === 0 && (
           <p className="text-xs font-sans text-amber-600 mt-2">
-            ⚠ Could not load company data. Check that NEXT_PUBLIC_SHEETS_CSV_URL is set correctly in Vercel environment variables.
+            ⚠ Could not load company data. Check that DATABASE_URL is set correctly in Vercel environment variables.
           </p>
         )}
       </div>

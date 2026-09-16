@@ -1,8 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { fetchCompanies } from "@/lib/sheets";
-import { slugify, getCompanyBySlug, getRelatedCompanies } from "@/lib/companies";
+import { slugify, getCompanies, getCompanyBySlug, getRelatedCompanies } from "@/lib/companies";
 import { getSectorStyle } from "@/lib/sectors";
 import CompanyLocationMapPanel from "@/components/company/CompanyLocationMapPanel";
 
@@ -13,14 +12,13 @@ interface Props {
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const companies = await fetchCompanies();
+  const companies = await getCompanies();
   return companies.map((c) => ({ slug: slugify(c.name) }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const companies = await fetchCompanies();
-  const company = getCompanyBySlug(companies, slug);
+  const company = await getCompanyBySlug(slug);
   if (!company) return {};
 
   const description = `${company.what_they_do} ${company.name} is based in ${company.hq} and tracked in Colorado Current's ${company.sector.toLowerCase()} directory.`.trim();
@@ -46,12 +44,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CompanyPage({ params }: Props) {
   const { slug } = await params;
-  const companies = await fetchCompanies();
-  const company = getCompanyBySlug(companies, slug);
+  const company = await getCompanyBySlug(slug);
   if (!company) notFound();
 
   const style = getSectorStyle(company.sector);
-  const related = getRelatedCompanies(companies, company);
+  const related = await getRelatedCompanies(company);
   const sources = company.sources ? company.sources.split(",").map((s) => s.trim()).filter(Boolean) : [];
 
   const jsonLd = {

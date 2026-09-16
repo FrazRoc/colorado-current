@@ -29,6 +29,8 @@ export const SECTOR_COLORS: Record<string, string> = {
   "Methane/Emissions Monitoring": "#C0392B",
   "Circular Economy/Recycling": "#1F9E89",
   "Aviation": "#2E6F95",
+  "Marine/Wave Energy": "#0E7490",
+  "Utility / Renewable Power": "#9C7A2E",
 };
 
 const SECTOR_COLOR_FALLBACK = "#888780";

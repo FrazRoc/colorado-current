@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/posts";
-import { fetchCompanies } from "@/lib/sheets";
-import { slugify } from "@/lib/companies";
+import { getCompanies, slugify } from "@/lib/companies";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://coloradocurrent.com";
@@ -14,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const companies = await fetchCompanies();
+  const companies = await getCompanies();
   const companyUrls = companies.map((company) => ({
     url: `${baseUrl}/companies/${slugify(company.name)}`,
     lastModified: company.last_updated ? new Date(company.last_updated) : new Date(),

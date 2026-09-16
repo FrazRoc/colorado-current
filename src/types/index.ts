@@ -21,7 +21,8 @@ export type Sector =
   | "Circular Economy/Recycling"
   | "Agriculture Tech"
   | "Aviation"
-  | "Methane/Emissions Monitoring";
+  | "Methane/Emissions Monitoring"
+  | "Marine/Wave Energy";
 
 export type Stage =
   | "Pre-seed"
