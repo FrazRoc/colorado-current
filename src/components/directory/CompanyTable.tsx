@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { Company } from "@/types";
 import { getSectorStyle } from "@/lib/sectors";
@@ -24,7 +25,8 @@ function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
 }
 
 export default function CompanyTable({ companies }: Props) {
-  const [sectorFilter, setSectorFilter] = useState(ALL);
+  const searchParams = useSearchParams();
+  const [sectorFilter, setSectorFilter] = useState(searchParams.get("sector") || ALL);
   const [stageFilter, setStageFilter] = useState(ALL);
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);

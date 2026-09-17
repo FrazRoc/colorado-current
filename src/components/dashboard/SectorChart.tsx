@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { SectorCount, DashboardSource } from "@/types";
 import { getSectorColor } from "@/lib/sectors";
 import SourceLinks from "./SourceLinks";
@@ -26,8 +27,12 @@ export default function SectorChart({ sectors, sources }: Props) {
           const color = getSectorColor(sector.name);
           const widthPct = (sector.count / max) * 100;
           return (
-            <div key={sector.name} className="flex items-center gap-3">
-              <span className="text-xs font-sans text-ink-secondary w-[168px] flex-shrink-0 truncate">
+            <Link
+              key={sector.name}
+              href={`/companies?sector=${encodeURIComponent(sector.name)}`}
+              className="flex items-center gap-3 group"
+            >
+              <span className="text-xs font-sans text-ink-secondary w-[168px] flex-shrink-0 truncate group-hover:text-cc-green">
                 {sector.name}
               </span>
               <div className="flex-1 h-2 bg-surface-border rounded-sm overflow-hidden">
@@ -39,7 +44,7 @@ export default function SectorChart({ sectors, sources }: Props) {
               <span className="text-xs font-sans font-bold text-ink w-5 text-right flex-shrink-0">
                 {sector.count}
               </span>
-            </div>
+            </Link>
           );
         })}
       </div>
@@ -53,13 +58,17 @@ export default function SectorChart({ sectors, sources }: Props) {
             {rest.map((sector) => {
               const color = getSectorColor(sector.name);
               return (
-                <span key={sector.name} className="flex items-center gap-1.5 text-xs font-sans text-ink-muted">
+                <Link
+                  key={sector.name}
+                  href={`/companies?sector=${encodeURIComponent(sector.name)}`}
+                  className="flex items-center gap-1.5 text-xs font-sans text-ink-muted hover:text-cc-green"
+                >
                   <span
                     className="rounded-full flex-shrink-0"
                     style={{ width: 7, height: 7, background: color }}
                   />
                   {sector.name} <span className="font-semibold text-ink">({sector.count})</span>
-                </span>
+                </Link>
               );
             })}
           </div>
