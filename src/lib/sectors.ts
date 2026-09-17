@@ -33,6 +33,7 @@ export const SECTOR_COLORS: Record<string, string> = {
   "Utility / Renewable Power": "#9C7A2E",
   "Critical Minerals": "#8B5A2B",
   "Bioenergy / RNG": "#5B7A3A",
+  "Climate Adaptation": "#4A5B6B",
 };
 
 const SECTOR_COLOR_FALLBACK = "#888780";

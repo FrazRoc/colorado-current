@@ -24,7 +24,8 @@ export type Sector =
   | "Methane/Emissions Monitoring"
   | "Marine/Wave Energy"
   | "Critical Minerals"
-  | "Bioenergy / RNG";
+  | "Bioenergy / RNG"
+  | "Climate Adaptation";
 
 export type Stage =
   | "Pre-seed"
