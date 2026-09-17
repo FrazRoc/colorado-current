@@ -198,6 +198,15 @@ public/images/                  — blog post images (screenshots of charts, etc
   via `getSectorColor()`. `src/data/dashboard.ts` (hand-maintained metrics/
   legislation) and `src/app/api/jobs/route.ts` (independent hardcoded
   `ATS_SOURCES` list) were never sourced from the Sheet and remain untouched.
+- **Dedup gotcha**: when checking whether a company from a new research batch
+  already exists, don't just `ilike` the full name as given (e.g. "Emporia
+  Energy") — a prior entry may be stored under a shorter or differently
+  formatted name (e.g. just "Emporia"), and a full-string match will miss it,
+  producing a silent duplicate. This happened once (Sep 2026) and was
+  caught only because Evan noticed it live on the site. Match on just the
+  first word of the normalized name (lowercased, punctuation stripped) when
+  scanning for existing companies, then eyeball any hits before assuming
+  they're unrelated.
 - A second table, `rejected_companies` (`src/db/schema.ts`), records companies
   that came up during research but were deliberately excluded as out of scope
   (name, reason, source URL, timestamp) — added Sep 2026 after repeatedly
