@@ -41,7 +41,10 @@ export default function Footer() {
           </a>.
         </p>
         <p className="text-2xs font-sans text-ink-faint">
-          Data updated monthly. Not investment advice.
+          Data updated monthly. Not investment advice. Logos via{" "}
+          <a href="https://logo.dev" target="_blank" rel="noopener noreferrer" className="hover:text-ink-muted no-underline">
+            Logo.dev
+          </a>.
         </p>
       </div>
     </footer>
