@@ -35,7 +35,7 @@ export default function CompanyLogo({ name, website, className = "w-16 h-16", te
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`https://logo.clearbit.com/${domain}`}
+      src={`/api/logo?domain=${encodeURIComponent(domain)}`}
       alt={`${name} logo`}
       onError={() => setFailed(true)}
       className={`flex-none ${className} rounded-lg border border-surface-border bg-white object-contain p-1.5`}
