@@ -7,6 +7,7 @@ import type { Company } from "@/types";
 import { getSectorStyle } from "@/lib/sectors";
 import { slugify } from "@/lib/companies";
 import CompanyLogo from "@/components/company/CompanyLogo";
+import CompanySocialIcons from "@/components/company/CompanySocialIcons";
 
 interface Props {
   companies: Company[];
@@ -174,6 +175,7 @@ export default function CompanyTable({ companies }: Props) {
                       {company.sources && company.sources.split(",").map((s, i) => (
                         <a key={i} href={s.trim()} target="_blank" rel="noopener noreferrer" className="text-2xs text-ink-faint hover:text-cc-green">[{i + 1}]</a>
                       ))}
+                      <CompanySocialIcons company={company} />
                       <Link href={`/companies/${slugify(company.name)}`} className="text-xs text-cc-green hover:underline font-semibold ml-auto">Full profile →</Link>
                     </div>
                   </div>
@@ -275,6 +277,7 @@ export default function CompanyTable({ companies }: Props) {
                                         ))}
                                       </span>
                                     )}
+                                    <CompanySocialIcons company={company} />
                                     <Link href={`/companies/${slugify(company.name)}`} className="text-xs text-cc-green hover:underline font-semibold ml-auto">Full profile →</Link>
                                   </div>
                                 </div>
