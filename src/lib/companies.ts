@@ -30,6 +30,7 @@ function toCompany(row: typeof companiesTable.$inferSelect): Company {
     jobs_url: row.jobsUrl ?? undefined,
     linkedin_url: row.linkedinUrl ?? undefined,
     twitter_url: row.twitterUrl ?? undefined,
+    bluesky_url: row.blueskyUrl ?? undefined,
     facebook_url: row.facebookUrl ?? undefined,
     instagram_url: row.instagramUrl ?? undefined,
     youtube_url: row.youtubeUrl ?? undefined,

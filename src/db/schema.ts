@@ -26,6 +26,7 @@ export const companies = pgTable("companies", {
   crunchbaseUrl: text("crunchbase_url"),
   pitchbookUrl: text("pitchbook_url"),
   builtinUrl: text("builtin_url"),
+  blueskyUrl: text("bluesky_url"),
   lat: doublePrecision("lat"),
   lng: doublePrecision("lng"),
 });

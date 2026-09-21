@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { slugify, getCompanies, getCompanyBySlug, getRelatedCompanies } from "@/lib/companies";
 import { getSectorStyle } from "@/lib/sectors";
 import CompanyLocationMapPanel from "@/components/company/CompanyLocationMapPanel";
+import CompanyLogo from "@/components/company/CompanyLogo";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -63,6 +64,7 @@ export default async function CompanyPage({ params }: Props) {
     sameAs: [
       company.linkedin_url,
       company.twitter_url,
+      company.bluesky_url,
       company.facebook_url,
       company.instagram_url,
       company.youtube_url,
@@ -82,9 +84,7 @@ export default async function CompanyPage({ params }: Props) {
 
       {/* Header */}
       <div className="flex gap-5 items-start pb-6 border-b border-surface-border mb-7">
-        <div className="flex-none w-16 h-16 rounded-lg border border-dashed border-surface-border bg-surface flex items-center justify-center">
-          <span className="font-serif font-bold text-2xl text-ink-faint">{company.name.charAt(0)}</span>
-        </div>
+        <CompanyLogo name={company.name} website={company.website} />
 
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-3 flex-wrap">
@@ -192,6 +192,7 @@ export default async function CompanyPage({ params }: Props) {
                 ["Open jobs", company.jobs_url],
                 ["LinkedIn", company.linkedin_url],
                 ["X / Twitter", company.twitter_url],
+                ["Bluesky", company.bluesky_url],
                 ["Facebook", company.facebook_url],
                 ["Instagram", company.instagram_url],
                 ["YouTube", company.youtube_url],
@@ -211,6 +212,7 @@ export default async function CompanyPage({ params }: Props) {
                 !company.jobs_url &&
                 !company.linkedin_url &&
                 !company.twitter_url &&
+                !company.bluesky_url &&
                 !company.facebook_url &&
                 !company.instagram_url &&
                 !company.youtube_url &&

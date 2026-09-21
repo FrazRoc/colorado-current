@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { Company } from "@/types";
 import { getSectorStyle } from "@/lib/sectors";
 import { slugify } from "@/lib/companies";
+import CompanyLogo from "@/components/company/CompanyLogo";
 
 interface Props {
   companies: Company[];
@@ -129,9 +130,10 @@ export default function CompanyTable({ companies }: Props) {
                     <Link
                       href={`/companies/${slugify(company.name)}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="text-sm font-sans font-semibold text-ink hover:text-cc-green"
+                      className="flex items-center gap-2 text-sm font-sans font-semibold text-ink hover:text-cc-green min-w-0"
                     >
-                      {company.name}
+                      <CompanyLogo name={company.name} website={company.website} className="w-6 h-6 rounded" textClassName="text-2xs" />
+                      <span className="truncate">{company.name}</span>
                     </Link>
                     <span
                       className="text-tag font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm flex-shrink-0"
@@ -221,9 +223,10 @@ export default function CompanyTable({ companies }: Props) {
                               <Link
                                 href={`/companies/${slugify(company.name)}`}
                                 onClick={(e) => e.stopPropagation()}
-                                className="hover:text-cc-green"
+                                className="flex items-center gap-2 hover:text-cc-green min-w-0"
                               >
-                                {company.name}
+                                <CompanyLogo name={company.name} website={company.website} className="w-6 h-6 rounded" textClassName="text-2xs" />
+                                <span className="truncate">{company.name}</span>
                               </Link>
                             </td>
                             <td className="px-4 py-3 w-1/5">
