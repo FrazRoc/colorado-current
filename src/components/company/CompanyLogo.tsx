@@ -7,6 +7,7 @@ interface Props {
   website?: string;
   className?: string;
   textClassName?: string;
+  padding?: string;
 }
 
 function getDomain(website?: string): string | null {
@@ -18,7 +19,7 @@ function getDomain(website?: string): string | null {
   }
 }
 
-export default function CompanyLogo({ name, website, className = "w-16 h-16", textClassName = "text-2xl" }: Props) {
+export default function CompanyLogo({ name, website, className = "w-16 h-16", textClassName = "text-2xl", padding = "p-1.5" }: Props) {
   const [failed, setFailed] = useState(false);
   const domain = getDomain(website);
 
@@ -38,7 +39,7 @@ export default function CompanyLogo({ name, website, className = "w-16 h-16", te
       src={`/api/logo?domain=${encodeURIComponent(domain)}`}
       alt={`${name} logo`}
       onError={() => setFailed(true)}
-      className={`flex-none ${className} rounded-lg border border-surface-border bg-white object-contain p-1.5`}
+      className={`flex-none ${className} rounded-lg border border-surface-border bg-white object-contain ${padding}`}
     />
   );
 }

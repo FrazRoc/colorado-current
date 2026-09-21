@@ -133,7 +133,7 @@ export default function CompanyTable({ companies }: Props) {
                       onClick={(e) => e.stopPropagation()}
                       className="flex items-center gap-2 text-sm font-sans font-semibold text-ink hover:text-cc-green min-w-0"
                     >
-                      <CompanyLogo name={company.name} website={company.website} className="w-6 h-6 rounded" textClassName="text-2xs" />
+                      <CompanyLogo name={company.name} website={company.website} className="w-8 h-8 rounded" textClassName="text-xs" padding="p-1" />
                       <span className="truncate">{company.name}</span>
                     </Link>
                     <span
@@ -227,7 +227,7 @@ export default function CompanyTable({ companies }: Props) {
                                 onClick={(e) => e.stopPropagation()}
                                 className="flex items-center gap-2 hover:text-cc-green min-w-0"
                               >
-                                <CompanyLogo name={company.name} website={company.website} className="w-6 h-6 rounded" textClassName="text-2xs" />
+                                <CompanyLogo name={company.name} website={company.website} className="w-8 h-8 rounded" textClassName="text-xs" padding="p-1" />
                                 <span className="truncate">{company.name}</span>
                               </Link>
                             </td>
