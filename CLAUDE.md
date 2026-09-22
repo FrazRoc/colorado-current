@@ -242,6 +242,11 @@ public/images/                  — blog post images (screenshots of charts, etc
   project (see below), and photos were deliberately skipped (no
   `photo_url` column) to avoid a third logo/avatar-provider dependency
   after already migrating company logos off Clearbit once this month.
+  Company profile pages are statically generated with `revalidate = 3600`,
+  so adding people via a direct DB script doesn't appear on already-built
+  pages immediately — Evan's preference (confirmed Sep 2026) is to let
+  each batch pick up naturally on the next ISR revalidation rather than
+  force a `vercel deploy --prod` after every batch.
 - Sector *colors* (`SECTOR_COLORS` in `src/lib/sectors.ts`) deliberately
   stayed a hardcoded map rather than moving into the DB — `getSectorColor()`
   is imported directly into client components (`CompanyMap.tsx`,
