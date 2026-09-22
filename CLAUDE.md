@@ -206,7 +206,13 @@ public/images/                  — blog post images (screenshots of charts, etc
   caught only because Evan noticed it live on the site. Match on just the
   first word of the normalized name (lowercased, punctuation stripped) when
   scanning for existing companies, then eyeball any hits before assuming
-  they're unrelated.
+  they're unrelated. Also strip hyphens specifically before taking the first
+  word — a source spelling a company "X-Cimer" will not match an existing
+  "Xcimer" row under naive first-word matching, since the hyphen makes
+  "x-cimer" tokenize as two words ("x", "cimer") instead of one. This
+  happened once (Sep 2026): a duplicate insert of Xcimer Energy was only
+  caught by the database's unique-slug constraint erroring out, not by the
+  dedup check itself.
 - A second table, `rejected_companies` (`src/db/schema.ts`), records companies
   that came up during research but were deliberately excluded as out of scope
   (name, reason, source URL, timestamp) — added Sep 2026 after repeatedly
