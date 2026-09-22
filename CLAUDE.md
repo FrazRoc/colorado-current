@@ -23,7 +23,11 @@ The site has two halves:
   `@neondatabase/serverless`, `neon-http` driver). Migrated off a Google Sheets
   CSV in Sep 2026 — see "Company directory data" below.
 - Charts: Chart.js (loaded dynamically client-side, `"use client"` components)
-- Map: Leaflet with CartoDB light tiles
+- Map: Leaflet with Esri's free World_Light_Gray_Base tiles (switched from
+  CartoDB's light_all raster tiles in Sep 2026 after Carto started requiring
+  an API key on that service and announced it's being retired in favor of
+  vector basemaps — Esri's tiles need no key/signup and are a close visual
+  match)
 - MDX rendering: `next-mdx-remote/rsc`
 - Deployment: push to `main` → Vercel auto-deploys
 
