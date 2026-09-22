@@ -226,6 +226,22 @@ public/images/                  — blog post images (screenshots of charts, etc
   startup lists. Check this table before researching a new company Evan
   hasn't explicitly pre-approved, to avoid redoing a scope decision already
   made.
+- **People** (added Sep 2026): `people` (canonical person, independent of any
+  company) and `people_roles` (many-to-many join with `title`, `roleType`
+  ["executive" | "board" | "founder"], `isCurrent`, optional start/end
+  dates, `sourceUrl`) — `src/db/schema.ts`. Query layer is
+  `src/lib/people.ts`'s `getCurrentLeadership(companyId)`, rendered as a
+  "Leadership" panel on the company profile page
+  (`src/app/companies/[slug]/page.tsx`), shown only when a company has at
+  least one current person on file. Deliberately scoped narrow to start:
+  **current roles only** (no historical/past roles yet — `isCurrent`
+  exists for when that's added later), and surfaced **only** on the
+  company profile page (no standalone `/people` directory yet). `people`
+  carries its own `linkedin_url` since that's the intended join key for
+  eventually cross-referencing against Evan's separate podcast-guest
+  project (see below), and photos were deliberately skipped (no
+  `photo_url` column) to avoid a third logo/avatar-provider dependency
+  after already migrating company logos off Clearbit once this month.
 - Sector *colors* (`SECTOR_COLORS` in `src/lib/sectors.ts`) deliberately
   stayed a hardcoded map rather than moving into the DB — `getSectorColor()`
   is imported directly into client components (`CompanyMap.tsx`,

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { slugify, getCompanies, getCompanyBySlug, getRelatedCompanies } from "@/lib/companies";
+import { getCurrentLeadership } from "@/lib/people";
 import { getSectorStyle } from "@/lib/sectors";
 import CompanyLocationMapPanel from "@/components/company/CompanyLocationMapPanel";
 import CompanyLogo from "@/components/company/CompanyLogo";
@@ -50,6 +51,7 @@ export default async function CompanyPage({ params }: Props) {
 
   const style = getSectorStyle(company.sector);
   const related = await getRelatedCompanies(company);
+  const leadership = await getCurrentLeadership(company.id);
   const sources = company.sources ? company.sources.split(",").map((s) => s.trim()).filter(Boolean) : [];
 
   const jsonLd = {
@@ -183,6 +185,31 @@ export default async function CompanyPage({ params }: Props) {
               )}
             </dl>
           </div>
+
+          {leadership.length > 0 && (
+            <div className="border border-surface-border rounded px-4 py-4">
+              <p className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-3">Leadership</p>
+              <ul className="flex flex-col">
+                {leadership.map((person, i) => (
+                  <li
+                    key={person.slug}
+                    className={`flex items-center justify-between gap-3 py-2 text-xs font-sans ${i < leadership.length - 1 ? "border-b border-surface-divider" : ""}`}
+                  >
+                    <div className="min-w-0">
+                      {person.linkedinUrl ? (
+                        <a href={person.linkedinUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-ink hover:text-cc-green truncate block">
+                          {person.name}
+                        </a>
+                      ) : (
+                        <span className="font-semibold text-ink truncate block">{person.name}</span>
+                      )}
+                    </div>
+                    <span className="text-ink-faint text-right flex-shrink-0">{person.title}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="border border-surface-border rounded px-4 py-4">
             <p className="text-tag font-sans font-bold uppercase tracking-widest text-ink-faint mb-3">Links</p>

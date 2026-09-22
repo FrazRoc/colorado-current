@@ -13,6 +13,7 @@ export function slugify(name: string): string {
 
 function toCompany(row: typeof companiesTable.$inferSelect): Company {
   return {
+    id: row.id,
     name: row.name,
     hq: row.hq,
     sector: row.sector as Company["sector"],

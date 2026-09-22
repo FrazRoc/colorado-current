@@ -40,6 +40,7 @@ export type Stage =
   | "R&D / Pilot";
 
 export interface Company {
+  id: number;
   name: string;
   hq: string;
   sector: Sector;
@@ -66,6 +67,16 @@ export interface Company {
   jobs_url?: string;
   lat?: number;
   lng?: number;
+}
+
+export type RoleType = "executive" | "board" | "founder";
+
+export interface PersonRole {
+  name: string;
+  slug: string;
+  title: string;
+  roleType: RoleType;
+  linkedinUrl?: string;
 }
 
 export type PostType = "Company spotlight" | "Industry analysis" | "Deep dive" | "Policy";
