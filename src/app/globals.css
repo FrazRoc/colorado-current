@@ -24,24 +24,33 @@
   --color-surface-border: #e8e8e4;
   --color-surface-divider: #f0f0ee;
 
-  /* Fonts */
-  --font-family-serif: "Playfair Display", Georgia, serif;
-  --font-family-sans: Inter, system-ui, sans-serif;
+  /* Fonts -- Tailwind v4 reads font-family theme tokens from --font-*, not
+     --font-family-* (which it silently ignores, since --font-family-serif
+     isn't a namespace it recognizes at all). This used to mean font-serif/
+     font-sans utility classes fell back to Tailwind's own generic default
+     serif/sans stacks everywhere except h1/h2/h3, which got Playfair via
+     the explicit tag-selector rule below regardless. */
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: Inter, system-ui, sans-serif;
 
-  /* Font sizes */
-  --font-size-2xs: 10px;
-  --font-size-tag: 10px;
+  /* Font sizes -- same issue: Tailwind v4 reads font-size tokens from
+     --text-*, not --font-size-*. text-2xs/text-tag generated no CSS at
+     all under the old names (no fallback exists for a made-up size), so
+     every caption/label using them silently rendered at the browser's
+     default font-size instead of 10px. */
+  --text-2xs: 10px;
+  --text-tag: 10px;
 }
 
 @layer base {
   body {
-    font-family: var(--font-family-sans);
+    font-family: var(--font-sans);
     color: var(--color-ink);
     background: var(--color-surface);
     -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3 {
-    font-family: var(--font-family-serif);
+    font-family: var(--font-serif);
   }
 }

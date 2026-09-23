@@ -153,21 +153,21 @@ export default async function CompanyPage({ params }: Props) {
 
         {/* Stat row -- funding promoted out of a plain list into a scannable header stat */}
         <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-surface-border mt-5">
-          <div className="py-3.5 px-0.5 sm:px-4 sm:first:pl-0.5 border-r border-b sm:border-b-0 border-surface-border">
+          <div className="py-3.5 px-4 border-r border-b sm:border-b-0 border-surface-border">
             <div className="text-2xs font-sans font-bold uppercase tracking-widest text-ink-faint mb-1">Funding</div>
-            <div className="text-[17px] font-sans font-extrabold tabular-nums text-cc-green-dark">{company.funding || "—"}</div>
+            <div className="text-[16px] font-sans font-extrabold tabular-nums text-cc-green-dark">{company.funding || "—"}</div>
           </div>
-          <div className="py-3.5 px-4 border-b sm:border-b-0 border-surface-border">
+          <div className="py-3.5 px-4 border-b sm:border-b-0 sm:border-r border-surface-border">
             <div className="text-2xs font-sans font-bold uppercase tracking-widest text-ink-faint mb-1">Stage</div>
-            <div className="text-[17px] font-sans font-extrabold tabular-nums text-ink">{company.stage}</div>
+            <div className="text-[16px] font-sans font-extrabold tabular-nums text-ink">{company.stage}</div>
           </div>
-          <div className="py-3.5 px-0.5 sm:px-4 sm:border-r border-surface-border">
+          <div className="py-3.5 px-4 border-r border-surface-border">
             <div className="text-2xs font-sans font-bold uppercase tracking-widest text-ink-faint mb-1">HQ</div>
-            <div className="text-[17px] font-sans font-extrabold tabular-nums text-ink">{company.hq}</div>
+            <div className="text-[16px] font-sans font-extrabold tabular-nums text-ink">{company.hq}</div>
           </div>
           <div className="py-3.5 px-4">
             <div className="text-2xs font-sans font-bold uppercase tracking-widest text-ink-faint mb-1">Founded</div>
-            <div className="text-[17px] font-sans font-extrabold tabular-nums text-ink">{company.founded || "—"}</div>
+            <div className="text-[16px] font-sans font-extrabold tabular-nums text-ink">{company.founded || "—"}</div>
           </div>
         </div>
       </div>

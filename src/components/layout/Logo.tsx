@@ -55,7 +55,7 @@ export default function Logo({ dark = false, size = "md" }: Props) {
       </svg>
       <span
         style={{
-          fontFamily: "var(--font-family-serif, Georgia, serif)",
+          fontFamily: "var(--font-serif, Georgia, serif)",
           fontSize: s.font,
           fontWeight: 700,
           color: textColor,
