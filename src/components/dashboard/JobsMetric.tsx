@@ -25,10 +25,10 @@ export default function JobsMetric() {
         {data ? data.total : error ? "—" : <span className="text-ink-faint">—</span>}
       </div>
       <div className="text-2xs font-sans text-ink-muted uppercase tracking-widest mt-1.5 mb-1">
-        Open jobs tracked
+        Open Colorado jobs
       </div>
       <div className="text-xs font-sans text-ink-muted">
-        {data ? `Across ${data.sources} companies with public ATS` : "Loading..."}
+        {data ? `In CO or remote-US, across ${data.sources} companies with public ATS` : "Loading..."}
       </div>
     </div>
   );

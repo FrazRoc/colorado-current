@@ -345,9 +345,16 @@ the voice and strip out the things that make it sound like Evan.
   right company (check board name / posting text / locations) — generic
   slugs collide constantly (e.g. Lever `arcadia` is a healthcare company, not
   Arcadia the energy platform; Ashby `ion`/`prometheus`/`terra` were all
-  unrelated companies). Crusoe and Halter dominate the total (~60%) and most
-  of Halter's roles are outside the US; the metric is labeled "open jobs
-  tracked", not Colorado-only.
+  unrelated companies). The dashboard headline counts only jobs located in
+  Colorado or fully remote anywhere in the US (`isColoradoOrRemoteUS` in the
+  route); the unfiltered count is still returned as `totalAllLocations`.
+  Filtering matters: unfiltered, Crusoe (Bay Area/Dublin) and Halter
+  (NZ/LatAm, plus region-bound "remote" field roles like "Montana") made up
+  ~60% of the total, and only ~40% of all postings are actually in CO.
+  Region-bound remote roles ("Remote - East Coast") are deliberately excluded.
+  Some ATS boards attach an HQ city to fully remote roles (WeaveGrid's are all
+  "San Francisco (Remote)") — set `remoteIsNationwide: true` on that source
+  rather than loosening the shared rule.
 - `SECTOR_COLORS` in `src/lib/sectors.ts` used to be copy-pasted independently
   into `SectorChart.tsx`, `CompanyMap.tsx`, and `MapPanel.tsx` — if you see a
   local `SECTOR_COLORS` const reappear in a component instead of an import
