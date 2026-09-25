@@ -336,7 +336,8 @@ the voice and strip out the things that make it sound like Evan.
   `getCompanyJobCount(slug)`), and the daily health check. **Which board a
   company uses is DB data, not code** (moved Sep 2026): `companies.ats_type`
   (a `FETCHERS` key — lever/greenhouse/ashby/workable/jobvite/rippling/
-  bamboohr/breezy/pinpoint), `ats_slug` (the board ID), and
+  bamboohr/breezy/pinpoint/workday; Workday's `ats_slug` format is
+  `tenant.wdN/site`, e.g. `itron.wd5/Itron`), `ats_slug` (the board ID), and
   `ats_remote_nationwide`. Adding a company's board = setting those columns
   (plus `jobs_url`, since the badge renders inside that link) — verify the
   slug returns the right company's postings first (see slug-collision note
@@ -353,9 +354,14 @@ the voice and strip out the things that make it sound like Evan.
   broken doesn't re-alert daily. `job_board_checks` also doubles as a daily
   history of open-job counts per company.
 - The ATS fetchers hit public APIs directly (Lever, Greenhouse,
-  Ashby, Workable, Jobvite, Rippling, BambooHR, Breezy, Pinpoint) — Workday,
+  Ashby, Workable, Jobvite, Rippling, BambooHR, Breezy, Pinpoint, Workday).
+  Workday has no *documented* public API — the fetcher uses the undocumented
+  `/wday/cxs/{tenant}/{site}/jobs` JSON endpoint that every myworkdayjobs.com
+  site's own frontend calls (quirks: max 20 per page, `total` only on the
+  first page, multi-location postings say "N Locations" and need a detail
+  call). It could break without notice; the health check will catch it.
   Paylocity, Dayforce, ADP, JazzHR, TrinetHire, iRecruit, and HRMDirect-based
-  career pages don't have usable public APIs and are not counted. ATS
+  career pages still aren't counted. ATS
   endpoints drift silently: in Sep 2026 Ashby's old non-user-facing listing
   endpoint and Workable's v3 GET both started 404ing (Crusoe's 350 jobs and
   every Workable company were counting as 0 with no error, since fetchers

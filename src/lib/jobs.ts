@@ -66,7 +66,8 @@ const COLORADO =
 function nonUsResidue(location: string): string {
   return location
     .toLowerCase()
-    .replace(/\b(remote|anywhere|united states( of america)?|usa|u\.s\.a?\.?|us|nationwide|work from home|wfh)\b/g, "")
+    .replace(/\./g, "") // "U.S." -> "us" so the word match below catches it
+    .replace(/\b(remote|anywhere|united states( of america)?|usa|us|nationwide|work from home|wfh)\b/g, "")
     .replace(/[\s,;:/|()\-–—.]+/g, "");
 }
 
@@ -181,7 +182,49 @@ async function fetchBambooHR(slug: string): Promise<Job[]> {
   }));
 }
 
+// Workday has no documented public API, but every myworkdayjobs.com career
+// site is backed by this JSON endpoint (the site's own frontend uses it), so
+// it could change without notice — the health check will flag it if it does.
+// ats_slug format: "{tenant}.wd{N}/{site}", e.g. "itron.wd5/Itron" for
+// https://itron.wd5.myworkdayjobs.com/Itron.
+async function fetchWorkday(slug: string): Promise<Job[]> {
+  const match = slug.match(/^([^.]+)\.(wd\d+)\/(.+)$/);
+  if (!match) throw new Error(`Bad Workday ats_slug "${slug}" (expected tenant.wdN/site)`);
+  const [, tenant, wd, site] = match;
+  const base = `https://${tenant}.${wd}.myworkdayjobs.com/wday/cxs/${tenant}/${site}`;
+  const PAGE = 20; // Workday's max page size
+
+  const postings: any[] = [];
+  let total = 0; // Workday only reports `total` on the first page (0 after)
+  for (let offset = 0; ; offset += PAGE) {
+    const data = await getJson(`${base}/jobs`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ appliedFacets: {}, limit: PAGE, offset, searchText: "" }),
+    });
+    const page = expectArray(data?.jobPostings, "jobPostings");
+    if (offset === 0) total = data.total ?? 0;
+    postings.push(...page);
+    if (page.length < PAGE || postings.length >= total) break;
+  }
+
+  // Multi-location postings only say "N Locations" in the list view; the
+  // detail endpoint has the actual primary + additional locations.
+  return Promise.all(
+    postings.map(async (p: any): Promise<Job> => {
+      let locations = [p.locationsText ?? ""];
+      if (/^\d+ Locations$/i.test(p.locationsText ?? "")) {
+        const detail = await getJson(`${base}${p.externalPath}`, { headers: { Accept: "application/json" } });
+        const info = detail?.jobPostingInfo;
+        locations = [info?.location, ...(info?.additionalLocations ?? [])].filter(Boolean);
+      }
+      return { title: p.title ?? "", locations, remote: false };
+    })
+  );
+}
+
 const FETCHERS: Record<string, (slug: string) => Promise<Job[]>> = {
+  workday: fetchWorkday,
   lever: fetchLever,
   greenhouse: fetchGreenhouse,
   ashby: fetchAshby,
