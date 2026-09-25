@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { desc } from "drizzle-orm";
+import { createHash } from "crypto";
 import { Resend } from "resend";
 import { getDb } from "@/db";
 import { jobBoardChecks } from "@/db/schema";
@@ -93,6 +94,13 @@ async function sendAlert(problems: JobBoardProblem[]) {
     )
     .join("");
   const today = new Date().toISOString().slice(0, 10);
+  // Key on the day *and* the problem set: a retried run (same problems) is
+  // deduped, but a different alert the same day isn't rejected. Resend 409s a
+  // reused key with a different payload, so a date-only key would drop it.
+  const fingerprint = createHash("sha1")
+    .update(problems.map((p) => `${p.companySlug}:${p.kind}`).sort().join(","))
+    .digest("hex")
+    .slice(0, 12);
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   // The SDK returns { data, error } rather than throwing, so check `error`.
@@ -108,7 +116,7 @@ async function sendAlert(problems: JobBoardProblem[]) {
         `<p>Boards are configured in the <code>companies</code> table (<code>ats_type</code>, <code>ats_slug</code>). ` +
         `Full history is in <code>job_board_checks</code>.</p>`,
     },
-    { idempotencyKey: `job-health/${today}` }
+    { idempotencyKey: `job-health/${today}/${fingerprint}` }
   );
   if (error) console.error("Job board alert email failed:", error.message);
 }
