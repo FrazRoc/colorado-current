@@ -352,7 +352,14 @@ the voice and strip out the things that make it sound like Evan.
   alerts only on *new* problems vs the previous run — a board that starts
   erroring, or drops to 0 postings after having ≥3 — so a board that stays
   broken doesn't re-alert daily. `job_board_checks` also doubles as a daily
-  history of open-job counts per company.
+  history of open-job counts per company. New problems are emailed via
+  Resend (Vercel Marketplace integration, Sep 2026; sets `RESEND_API_KEY` +
+  `RESEND_EMAIL_DOMAIN`) to `JOB_ALERT_EMAIL` from
+  `jobs@alerts.coloradocurrent.com`. The sending subdomain is verified via
+  DNS records at the domain's *registrar* (coloradocurrent.com uses
+  third-party nameservers, not Vercel DNS) — if alerts stop arriving, check
+  domain status in Resend first. Problems are also always `console.warn`ed,
+  so they show in Vercel function logs even if email fails.
 - The ATS fetchers hit public APIs directly (Lever, Greenhouse,
   Ashby, Workable, Jobvite, Rippling, BambooHR, Breezy, Pinpoint, Workday).
   Workday has no *documented* public API — the fetcher uses the undocumented
@@ -365,7 +372,7 @@ the voice and strip out the things that make it sound like Evan.
   endpoints drift silently: in Sep 2026 Ashby's old non-user-facing listing
   endpoint and Workable's v3 GET both started 404ing (Crusoe's 350 jobs and
   every Workable company were counting as 0 with no error, since fetchers
-  return 0 on failure) — current endpoints are Ashby
+  returned 0 on failure back then) — current endpoints are Ashby
   `api.ashbyhq.com/posting-api/job-board/{slug}`, Workable
   `apply.workable.com/api/v1/widget/accounts/{slug}`, Rippling
   `api.rippling.com/platform/api/ats/v1/board/{slug}/jobs`. If the total
