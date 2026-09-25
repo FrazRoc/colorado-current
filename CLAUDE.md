@@ -499,10 +499,16 @@ the voice and strip out the things that make it sound like Evan.
   marked Acquired (Optera, Scythe, Uplight, Global Thermostat under its
   parent Zero Carbon Systems, and Meati as "Acquired/Distressed"). 15
   companies recorded in `rejected_companies`.
-- **People:** 171 people with current roles at 125 companies (founders +
-  C-suite, each sourced). Still missing: EVchargeME, Korsail, Seditio,
-  Sortient, TerraLogic (no public leadership found). Only 2 board roles
-  (RES Americas, Guzman Energy chairs); board coverage is a to-do.
+- **People:** 264 people / 265 current roles at 125 companies (founders,
+  C-suite, and — since Sep 25 — 85 board roles across 25 companies, each
+  sourced; outside affiliations go in `people.bio`). Board seats came from
+  companies' own team/governance pages, so boards only appear where a
+  company publishes one. Co-ops/public utilities: chair + vice chair only.
+  One cross-company link so far: Bryan Hannegan (Holy Cross CEO, RMI
+  trustee). No leadership at all yet for EVchargeME, Korsail, Seditio,
+  Sortient, TerraLogic (no public sources). When adding people whose name
+  matches an existing `people` slug, only reuse the record if it's
+  confirmed to be the same person — otherwise skip and flag.
 - **Socials:** LinkedIn on 124 companies; X/Facebook/Instagram/YouTube where
   a company links them from its own site.
 - **Jobs:** 41 companies with countable ATS boards; the homepage metric counts
@@ -514,11 +520,13 @@ the voice and strip out the things that make it sound like Evan.
   and 2 of the sector-by-sector emissions series ("The Grid Got Cleaner. The
   Roads Didn't." / "Oil and Gas Is Colorado's Secret Climate Win. Buildings
   Aren't."). An AtmosZero company spotlight has been drafted (not in repo).
-- **Open directory to-dos:** 32 companies missing founded year, 23 with vague
-  funding, thin sectors (after the Sep 25 additions/relabels: Bioenergy 2, Carbon
+- **Open directory to-dos:** 8 companies still missing a founded year (no
+  public date: GLADE is a project, Seditio/TerraLogic have almost no
+  footprint), ~22 with undisclosed funding (mostly genuinely undisclosed —
+  bootstrapped, co-op, or PE-owned — so leave those as-is), thin sectors (after the Sep 25 additions/relabels: Bioenergy 2, Carbon
   Capture/DAC 3, Wind & Solar Development 4; Marine stays at 1 — no other
-  Colorado marine-energy company exists), board members, and the Minus
-  Materials / AtmosZero conflicts noted above.
+  Colorado marine-energy company exists), and the Minus Materials / AtmosZero
+  conflicts noted above.
 - LinkedIn company page + personal profile are active distribution channels;
   Evan cross-posts each article there, tailored per-post (shorter teaser +
   link for short posts, full article-in-post for longer ones)
