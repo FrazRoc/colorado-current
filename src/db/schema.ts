@@ -29,6 +29,28 @@ export const companies = pgTable("companies", {
   blueskyUrl: text("bluesky_url"),
   lat: doublePrecision("lat"),
   lng: doublePrecision("lng"),
+  // Public ATS board used for live open-job counts (src/lib/jobs.ts). Null
+  // atsType = not counted. atsType is one of the FETCHERS keys in jobs.ts.
+  atsType: text("ats_type"),
+  atsSlug: text("ats_slug"),
+  // Board attaches an HQ city to fully remote roles (e.g. WeaveGrid lists
+  // every remote job as "San Francisco (Remote)"), so remote-flagged jobs
+  // count toward Colorado even though a non-Colorado city is listed.
+  atsRemoteNationwide: boolean("ats_remote_nationwide").notNull().default(false),
+});
+
+// One row per company per daily job-board health check
+// (/api/cron/job-health). Lets the check tell "board broke" apart from
+// "company isn't hiring" by comparing against the previous run, and doubles as
+// a history of open-job counts over time.
+export const jobBoardChecks = pgTable("job_board_checks", {
+  id: serial("id").primaryKey(),
+  companyId: integer("company_id").notNull().references(() => companies.id),
+  checkedAt: timestamp("checked_at").defaultNow().notNull(),
+  status: text("status").notNull(), // "ok" | "error"
+  error: text("error"),
+  coloradoCount: integer("colorado_count").notNull().default(0),
+  allLocationsCount: integer("all_locations_count").notNull().default(0),
 });
 
 // Companies deliberately excluded from the directory during research passes

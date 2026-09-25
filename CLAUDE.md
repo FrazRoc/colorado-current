@@ -330,13 +330,28 @@ the voice and strip out the things that make it sound like Evan.
   `<sup>[[1]](#source-1)</sup>` — no custom component needed
 - Google Sheets CSV fetch: use `next: { revalidate: 3600 }` only — do NOT
   also set `cache: "no-store"`, they conflict and Next.js will warn/error
-- Job counts live in `src/lib/jobs.ts` (`ATS_SOURCES`, one fetcher per ATS,
-  the Colorado location rule), shared by `/api/jobs` (dashboard total) and
-  the company profile page (the "N in CO" badge on the Open jobs link, via
-  `getCompanyJobCount(slug)`). Each source's `companySlug` must match the
-  company's stored DB `slug` — the badge silently won't appear otherwise.
-  Adding a company's board = one line in `ATS_SOURCES`; also set its
-  `jobs_url` in the DB, since the badge renders inside that link.
+- Job counts live in `src/lib/jobs.ts` (one fetcher per ATS + the Colorado
+  location rule), shared by `/api/jobs` (dashboard total), the company
+  profile page (the "N in CO" badge on the Open jobs link, via
+  `getCompanyJobCount(slug)`), and the daily health check. **Which board a
+  company uses is DB data, not code** (moved Sep 2026): `companies.ats_type`
+  (a `FETCHERS` key — lever/greenhouse/ashby/workable/jobvite/rippling/
+  bamboohr/breezy/pinpoint), `ats_slug` (the board ID), and
+  `ats_remote_nationwide`. Adding a company's board = setting those columns
+  (plus `jobs_url`, since the badge renders inside that link) — verify the
+  slug returns the right company's postings first (see slug-collision note
+  below). Supporting a *new* ATS platform is the only thing that needs code.
+- Fetchers **throw** on HTTP errors or an unrecognized response shape (they
+  used to silently return 0, which is how Crusoe's 350 jobs went uncounted
+  unnoticed). `countSource` turns that into `status: "error"`, and
+  `/api/jobs` lists erroring boards under `errors`.
+- Daily health check: `/api/cron/job-health` (Vercel Cron, `vercel.json`,
+  14:00 UTC; authenticated via the `CRON_SECRET` env var, which Vercel sends
+  as a Bearer token) logs every board to the `job_board_checks` table and
+  alerts only on *new* problems vs the previous run — a board that starts
+  erroring, or drops to 0 postings after having ≥3 — so a board that stays
+  broken doesn't re-alert daily. `job_board_checks` also doubles as a daily
+  history of open-job counts per company.
 - The ATS fetchers hit public APIs directly (Lever, Greenhouse,
   Ashby, Workable, Jobvite, Rippling, BambooHR, Breezy, Pinpoint) — Workday,
   Paylocity, Dayforce, ADP, JazzHR, TrinetHire, iRecruit, and HRMDirect-based

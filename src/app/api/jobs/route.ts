@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ATS_SOURCES, getJobCounts } from "@/lib/jobs";
+import { getJobCounts } from "@/lib/jobs";
 
 // Cache the whole response: some ATS payloads (Ashby includes full job
 // descriptions, ~7.5MB for Crusoe) exceed Next's 2MB per-fetch cache limit,
@@ -18,7 +18,8 @@ export async function GET() {
     companies: companies
       .filter((c) => c.allLocations > 0)
       .map(({ name, count, allLocations }) => ({ name, count, allLocations })),
+    errors: companies.filter((c) => c.status === "error").map(({ name, error }) => ({ name, error })),
     updatedAt: new Date().toISOString(),
-    sources: ATS_SOURCES.length,
+    sources: companies.length,
   });
 }
