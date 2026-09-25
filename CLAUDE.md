@@ -330,9 +330,24 @@ the voice and strip out the things that make it sound like Evan.
 - Google Sheets CSV fetch: use `next: { revalidate: 3600 }` only — do NOT
   also set `cache: "no-store"`, they conflict and Next.js will warn/error
 - The `/api/jobs` route hits public ATS APIs directly (Lever, Greenhouse,
-  Ashby, Workable, Jobvite, Rippling, BambooHR) — Workday, Paylocity,
-  Dayforce, TrinetHire, iRecruit, and HRMDirect-based career pages don't have
-  usable public APIs and are not counted
+  Ashby, Workable, Jobvite, Rippling, BambooHR, Breezy, Pinpoint) — Workday,
+  Paylocity, Dayforce, ADP, JazzHR, TrinetHire, iRecruit, and HRMDirect-based
+  career pages don't have usable public APIs and are not counted. ATS
+  endpoints drift silently: in Sep 2026 Ashby's old non-user-facing listing
+  endpoint and Workable's v3 GET both started 404ing (Crusoe's 350 jobs and
+  every Workable company were counting as 0 with no error, since fetchers
+  return 0 on failure) — current endpoints are Ashby
+  `api.ashbyhq.com/posting-api/job-board/{slug}`, Workable
+  `apply.workable.com/api/v1/widget/accounts/{slug}`, Rippling
+  `api.rippling.com/platform/api/ats/v1/board/{slug}/jobs`. If the total
+  looks low, curl each source before assuming companies just aren't hiring.
+  When adding a source by guessing a slug, verify the board is actually the
+  right company (check board name / posting text / locations) — generic
+  slugs collide constantly (e.g. Lever `arcadia` is a healthcare company, not
+  Arcadia the energy platform; Ashby `ion`/`prometheus`/`terra` were all
+  unrelated companies). Crusoe and Halter dominate the total (~60%) and most
+  of Halter's roles are outside the US; the metric is labeled "open jobs
+  tracked", not Colorado-only.
 - `SECTOR_COLORS` in `src/lib/sectors.ts` used to be copy-pasted independently
   into `SectorChart.tsx`, `CompanyMap.tsx`, and `MapPanel.tsx` — if you see a
   local `SECTOR_COLORS` const reappear in a component instead of an import
