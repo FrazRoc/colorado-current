@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { slugify, getCompanies, getCompanyBySlug, getRelatedCompanies } from "@/lib/companies";
 import { getCurrentLeadership } from "@/lib/people";
+import { getCompanyJobCount } from "@/lib/jobs";
 import { getSectorStyle, getSectorColor } from "@/lib/sectors";
 import CompanyLocationMapPanel from "@/components/company/CompanyLocationMapPanel";
 import CompanyLogo from "@/components/company/CompanyLogo";
@@ -60,6 +61,8 @@ export default async function CompanyPage({ params }: Props) {
   const sectorColor = getSectorColor(company.sector);
   const related = await getRelatedCompanies(company);
   const leadership = await getCurrentLeadership(company.id);
+  const jobCount = await getCompanyJobCount(slug);
+  const jobsNote = jobCount ? (jobCount.count > 0 ? `${jobCount.count} in CO` : "None in CO") : null;
   const sources = company.sources ? company.sources.split(",").map((s) => s.trim()).filter(Boolean) : [];
   const hasSnapshotExtras = Boolean(company.target_customer || company.b_corp === "Yes");
 
@@ -232,7 +235,19 @@ export default async function CompanyPage({ params }: Props) {
                 .map(([label, url], i, arr) => (
                   <li key={label} className={i < arr.length - 1 ? "border-b border-surface-divider" : ""}>
                     <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between py-2.5 text-xs font-sans font-semibold text-ink hover:text-cc-green">
-                      {label} <span>→</span>
+                      {label}
+                      <span className="flex items-center gap-2">
+                        {label === "Open jobs" && jobsNote && (
+                          <span
+                            className={`text-2xs font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm tabular-nums ${
+                              jobCount && jobCount.count > 0 ? "bg-cc-green-light text-cc-green-dark" : "text-ink-faint"
+                            }`}
+                          >
+                            {jobsNote}
+                          </span>
+                        )}
+                        →
+                      </span>
                     </a>
                   </li>
                 ))}

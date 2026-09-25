@@ -41,7 +41,8 @@ src/
     blog/page.tsx                — blog index
     blog/[slug]/page.tsx         — individual post renderer (MDX + citations)
     blog/[slug]/opengraph-image.tsx — per-post OG image generator (next/og)
-    api/jobs/route.ts           — live ATS job count aggregator
+    api/jobs/route.ts           — live ATS job count aggregator (thin wrapper
+                                   over src/lib/jobs.ts; response cached 1h)
     sitemap.ts, robots.ts       — auto-generated SEO files
   components/
     dashboard/                  — SectorChart, PolicyPanel, EmissionsPanel,
@@ -329,7 +330,14 @@ the voice and strip out the things that make it sound like Evan.
   `<sup>[[1]](#source-1)</sup>` — no custom component needed
 - Google Sheets CSV fetch: use `next: { revalidate: 3600 }` only — do NOT
   also set `cache: "no-store"`, they conflict and Next.js will warn/error
-- The `/api/jobs` route hits public ATS APIs directly (Lever, Greenhouse,
+- Job counts live in `src/lib/jobs.ts` (`ATS_SOURCES`, one fetcher per ATS,
+  the Colorado location rule), shared by `/api/jobs` (dashboard total) and
+  the company profile page (the "N in CO" badge on the Open jobs link, via
+  `getCompanyJobCount(slug)`). Each source's `companySlug` must match the
+  company's stored DB `slug` — the badge silently won't appear otherwise.
+  Adding a company's board = one line in `ATS_SOURCES`; also set its
+  `jobs_url` in the DB, since the badge renders inside that link.
+- The ATS fetchers hit public APIs directly (Lever, Greenhouse,
   Ashby, Workable, Jobvite, Rippling, BambooHR, Breezy, Pinpoint) — Workday,
   Paylocity, Dayforce, ADP, JazzHR, TrinetHire, iRecruit, and HRMDirect-based
   career pages don't have usable public APIs and are not counted. ATS
