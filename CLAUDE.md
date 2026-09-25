@@ -493,17 +493,19 @@ the voice and strip out the things that make it sound like Evan.
 
 ## Current state (as of Sep 25, 2026)
 
-- **126 companies** across 25 sectors, spanning clean energy through broader
+- **131 companies** across 25 sectors, spanning clean energy through broader
   "climate tech" (scope was deliberately widened — see Low-Carbon Materials,
-  Circular Economy/Recycling, Aviation, Methane/Emissions Monitoring). 4
-  marked Acquired (Optera, Scythe, Uplight, and Meati as
-  "Acquired/Distressed"). 12 companies recorded in `rejected_companies`.
-- **People:** 159 people with current roles at 120 companies (founders +
+  Circular Economy/Recycling, Aviation, Methane/Emissions Monitoring). 5
+  marked Acquired (Optera, Scythe, Uplight, Global Thermostat under its
+  parent Zero Carbon Systems, and Meati as "Acquired/Distressed"). 15
+  companies recorded in `rejected_companies`.
+- **People:** 171 people with current roles at 125 companies (founders +
   C-suite, each sourced). Still missing: EVchargeME, Korsail, Seditio,
-  Sortient, TerraLogic (no public leadership found). No board members yet.
-- **Socials:** LinkedIn on 119 companies; X/Facebook/Instagram/YouTube where
+  Sortient, TerraLogic (no public leadership found). Only 2 board roles
+  (RES Americas, Guzman Energy chairs); board coverage is a to-do.
+- **Socials:** LinkedIn on 124 companies; X/Facebook/Instagram/YouTube where
   a company links them from its own site.
-- **Jobs:** 40 companies with countable ATS boards; the homepage metric counts
+- **Jobs:** 41 companies with countable ATS boards; the homepage metric counts
   Colorado + remote-US openings (~397 as of Sep 25, of ~1,050 total postings),
   each profile page shows "N in CO", and a daily health check emails
   evanfrasz@gmail.com (via `JOB_ALERT_EMAIL`) when a board breaks.
@@ -513,9 +515,10 @@ the voice and strip out the things that make it sound like Evan.
   Roads Didn't." / "Oil and Gas Is Colorado's Secret Climate Win. Buildings
   Aren't."). An AtmosZero company spotlight has been drafted (not in repo).
 - **Open directory to-dos:** 32 companies missing founded year, 23 with vague
-  funding, thin sectors to fill (Bioenergy, Wind & Solar Development, Marine
-  at 1 company each; Carbon Capture/DAC at 2), board members, and the
-  Minus Materials / AtmosZero conflicts noted above.
+  funding, thin sectors (after the Sep 25 additions/relabels: Bioenergy 2, Carbon
+  Capture/DAC 3, Wind & Solar Development 4; Marine stays at 1 — no other
+  Colorado marine-energy company exists), board members, and the Minus
+  Materials / AtmosZero conflicts noted above.
 - LinkedIn company page + personal profile are active distribution channels;
   Evan cross-posts each article there, tailored per-post (shorter teaser +
   link for short posts, full article-in-post for longer ones)
