@@ -41,8 +41,13 @@ src/
     blog/page.tsx                — blog index
     blog/[slug]/page.tsx         — individual post renderer (MDX + citations)
     blog/[slug]/opengraph-image.tsx — per-post OG image generator (next/og)
+    companies/[slug]/page.tsx   — company profile (leadership, links + "N in
+                                   CO" jobs badge, HQ map, related); ISR 1h
     api/jobs/route.ts           — live ATS job count aggregator (thin wrapper
                                    over src/lib/jobs.ts; response cached 1h)
+    api/cron/job-health/route.ts — daily job-board health check + email alert
+    api/logo/route.ts           — logo.dev proxy (keeps LOGO_DEV_TOKEN
+                                   server-side); used by CompanyLogo
     sitemap.ts, robots.ts       — auto-generated SEO files
   components/
     dashboard/                  — SectorChart, PolicyPanel, EmissionsPanel,
@@ -142,6 +147,8 @@ src/
                                    union against the live Sheet first.
 
 public/images/                  — blog post images (screenshots of charts, etc.)
+vercel.json                     — Vercel Cron schedule (job-health, daily)
+src/lib/jobs.ts                 — ATS fetchers + Colorado location rule
 ```
 
 ## Company directory data (Neon Postgres)
@@ -262,6 +269,52 @@ public/images/                  — blog post images (screenshots of charts, etc
   change — that field was removed from both `dashboard.ts` and the
   `DashboardData` type since it's fully superseded now). `/companies` and the
   map render live from the DB the same way.
+
+### Research & data-quality learnings (Sep 2026 audit)
+
+- **Company status drifts silently — re-audit periodically.** A single pass
+  over the July/Aug rows (Sep 24–25 2026) found Scythe Robotics acquired (by
+  ASI, Mar 2026), Uplight majority-acquired (Octopus, Sep 2026), Solid Power
+  public but still listed "Growth", Fervo post-IPO, ExoPower relocated
+  (Lafayette → Grand Junction), and CEO changes at Terra CO2, Energy Fuels,
+  and Gevo. Carbon Cycle Energy looked defunct (broken site, nothing newer
+  than ~2016) and was moved to `rejected_companies` with the reason recorded.
+  Roughly 1 in 10 rows had a material change after ~2 months; check the
+  oldest `last_updated` rows first.
+- **Aggregators are leads, not sources.** Tracxn/PitchBook/ZoomInfo/
+  RocketReach summaries were wrong often enough to matter: ZoomInfo listed
+  Yes Energy's CEO's executive assistant as "CEO"; an "Arcadia" job board on
+  Lever belonged to a healthcare company; PitchBook's 1999 founding year for
+  The Hemp Plastic Company was the founder's earlier failed venture. Prefer
+  the company's own site, press releases, and SEC filings. When only an
+  aggregator has a number, label it in the field text (e.g. "~$33M total
+  (Tracxn)"). When sources conflict and neither is primary, **don't
+  overwrite** — record the conflict in `notes` for Evan (open as of Sep 25:
+  Minus Materials HQ/CEO/website, AtmosZero funding).
+- **Leadership row conventions** (`people` / `people_roles`): one role row
+  per person per company; a founder who is also an exec is a single
+  `roleType: "founder"` row with a combined title ("Co-Founder & CEO"); a
+  non-founder chief is `"executive"`. Always fill `source_url`. After an
+  acquisition, keep founders' titles as-of the deal and say so in
+  `people.notes` rather than guessing post-deal roles. Before inserting,
+  check for slug collisions and eyeball surname matches against existing
+  `people` rows.
+- **Social URLs** were mostly scraped from each company homepage's footer;
+  junk to filter: `facebook.com/2008` (the old FB XML namespace, not a page),
+  truncated `facebook.com/profile.php`, `/people`, `/pg`. Skip a company's
+  socials when the only accounts found are a parent's (GLADE → Oxy corporate).
+  JS-rendered sites need a LinkedIn search fallback; verify a found page's
+  description matches before saving.
+- **One-off DB scripts:** for quick raw SQL, `node --env-file=.env.local
+  script.mjs` with `neon(process.env.DATABASE_URL)` is the fastest path (no
+  tsx/dotenv needed). Importing app code (e.g. `src/lib/jobs.ts`) needs
+  `npx dotenv -e .env.local -- npx tsx --tsconfig tsconfig.json script.mts` —
+  `.mts`, since tsx's CJS output rejects top-level await. Neon's tagged
+  template can't parameterize SQL keywords/interval literals
+  (`interval ${"1 minute"}` is a syntax error — inline it). macOS has no
+  `timeout` command; use an in-script `setTimeout(...).unref()` guard.
+  Clean up any test rows you insert — and delete only those (record the max
+  id first), never the whole table, since real cron rows may exist.
 
 ## Writing style guide (STRICT — read before drafting any blog content)
 
@@ -398,18 +451,71 @@ the voice and strip out the things that make it sound like Evan.
   entry above for the fuller story on why it's the single canonical color map
   now (badge colors included).
 
-## Current state (as of late Aug 2026)
+### Domain, DNS & email
 
-- ~95 companies in the directory, spanning clean energy through broader
-  "climate tech" (the scope was deliberately widened partway through — see
-  sectors like Low-Carbon Materials, Circular Economy/Recycling, Aviation,
-  Methane/Emissions Monitoring that reflect this)
-- 3 blog posts published: "Welcome to Colorado Current," "Colorado Is Already
-  Two Years Behind on Its Climate Targets," "The Grid Got Cleaner. The Roads
-  Didn't." (Part 1 of a sector-by-sector emissions series)
-- Part 2 of the emissions series ("Oil and Gas Is Colorado's Secret Climate
-  Win. Buildings Aren't.") is drafted/near-complete
-- A company spotlight post on AtmosZero has been drafted
+- **DNS for coloradocurrent.com is on Cloudflare** (nameservers
+  `*.ns.cloudflare.com`), not Vercel. `vercel dns ls` shows a stale set of
+  records that aren't authoritative — make DNS changes in Cloudflare (Evan
+  does these; Claude Code can't). Keep every record **DNS only** (grey
+  cloud): Vercel already provides CDN/TLS, and Cloudflare's proxy in front of
+  Vercel risks redirect loops. Ignore Cloudflare's "proxying is required"
+  banner.
+- `www.coloradocurrent.com` is a Vercel project domain that 308-redirects to
+  the apex, path-preserving (added Sep 2026; www previously didn't resolve at
+  all). Vercel didn't auto-issue its TLS cert — it took a manual
+  `vercel certs issue www.coloradocurrent.com`. If a new hostname serves the
+  apex cert (`subjectAltName does not match`) after DNS verifies, do that.
+- **Email auth on the root domain is locked down:** `v=spf1 -all` and DMARC
+  `p=reject` (Sep 2026, to stop spoofing — nothing legitimately sends as
+  @coloradocurrent.com). **Anything new that sends from the root domain
+  (Google Workspace, a newsletter tool) must be added to SPF/DKIM first or
+  its mail will be rejected.** The Resend job alerts are unaffected — they
+  send from the `alerts.` subdomain, which has its own DKIM/SPF (and passes
+  DMARC alignment).
+
+### Agent skills & neighboring repos
+
+- Provider agent skills (Neon, Resend/React Email) are installed into
+  `.agents/skills/` with `.claude/skills/*` symlinks, and are **deliberately
+  not committed** — `.gitignore` excludes them as local tooling, since the
+  providers update them on reinstall and committed copies would go stale. On
+  a new machine: `npx skills add neondatabase/agent-skills` and
+  `npx skills add resend/resend-skills` (sources are listed in the ignored
+  `skills-lock.json`). Follow a provider skill over memory when one exists
+  (e.g. Resend's SDK returns `{ data, error }` and never throws).
+- `~/projects/podcast-network*` are **git worktrees of a different project**
+  (Evan's podcast-guest graph), often with other Claude sessions actively
+  editing them. When looking at that code, use read-only git (`git show
+  origin/main:path`, `git diff`) — never `git checkout <ref> -- .`,
+  `restore`, `stash`, or `reset` there. A `git checkout origin/main -- .` run
+  just to "read the latest code" (Sep 25 2026) silently reverted another
+  session's uncommitted edits.
+
+## Current state (as of Sep 25, 2026)
+
+- **126 companies** across 25 sectors, spanning clean energy through broader
+  "climate tech" (scope was deliberately widened — see Low-Carbon Materials,
+  Circular Economy/Recycling, Aviation, Methane/Emissions Monitoring). 4
+  marked Acquired (Optera, Scythe, Uplight, and Meati as
+  "Acquired/Distressed"). 12 companies recorded in `rejected_companies`.
+- **People:** 159 people with current roles at 120 companies (founders +
+  C-suite, each sourced). Still missing: EVchargeME, Korsail, Seditio,
+  Sortient, TerraLogic (no public leadership found). No board members yet.
+- **Socials:** LinkedIn on 119 companies; X/Facebook/Instagram/YouTube where
+  a company links them from its own site.
+- **Jobs:** 40 companies with countable ATS boards; the homepage metric counts
+  Colorado + remote-US openings (~397 as of Sep 25, of ~1,050 total postings),
+  each profile page shows "N in CO", and a daily health check emails
+  evanfrasz@gmail.com (via `JOB_ALERT_EMAIL`) when a board breaks.
+- **Blog:** 4 posts in `src/content/posts/` — "Welcome to Colorado Current,"
+  "Colorado Is Already Two Years Behind on Its Climate Targets," and Parts 1
+  and 2 of the sector-by-sector emissions series ("The Grid Got Cleaner. The
+  Roads Didn't." / "Oil and Gas Is Colorado's Secret Climate Win. Buildings
+  Aren't."). An AtmosZero company spotlight has been drafted (not in repo).
+- **Open directory to-dos:** 32 companies missing founded year, 23 with vague
+  funding, thin sectors to fill (Bioenergy, Wind & Solar Development, Marine
+  at 1 company each; Carbon Capture/DAC at 2), board members, and the
+  Minus Materials / AtmosZero conflicts noted above.
 - LinkedIn company page + personal profile are active distribution channels;
   Evan cross-posts each article there, tailored per-post (shorter teaser +
   link for short posts, full article-in-post for longer ones)

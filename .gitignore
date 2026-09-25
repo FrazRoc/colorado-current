@@ -39,6 +39,8 @@ yarn-error.log*
 # local agent tooling (installed by Vercel Marketplace integrations, Claude Code)
 .agents/
 .claude/settings.local.json
+.claude/skills/
+.claude/scheduled_tasks.lock
 skills-lock.json
 
 # typescript
